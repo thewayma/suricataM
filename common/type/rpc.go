@@ -1,8 +1,8 @@
 package common
 
 import (
-	"time"
 	"sync"
+	"time"
 	"math"
 	"net/rpc"
 	"github.com/toolkits/net"
@@ -10,8 +10,9 @@ import (
 
 type RpcClient struct {
 	sync.Mutex
-	rpcClient *rpc.Client
+	Peer      string //!< debug info: agent => heartbeat, or agent <= transporter
 	RpcServer string
+	rpcClient *rpc.Client
 	Timeout   time.Duration
 }
 
@@ -37,7 +38,7 @@ func (this *RpcClient) serverConn() error {
 
 		this.rpcClient, err = net.JsonRpcClient("tcp", this.RpcServer, this.Timeout)
 		if err != nil {
-			Log.Error("agent => heartbeat, dial %s fail: %v", this.RpcServer, err)
+			Log.Error("%s, dial %s fail: %v", this.Peer, this.RpcServer, err)
 			if retry > 3 {
 				return err
 			}
@@ -68,7 +69,7 @@ func (this *RpcClient) Call(method string, args interface{}, reply interface{}) 
 
 	select {
 	case <-time.After(timeout):
-		Log.Error("agent => heartbeat, [WARN] rpc call timeout %v => %v", this.rpcClient, this.RpcServer)
+		Log.Error("%s, [WARN] rpc call timeout %v => %v", this.Peer, this.rpcClient, this.RpcServer)
 		this.close()
 	case err := <-done:
 		if err != nil {
