@@ -1,0 +1,55 @@
+{
+    "Debug": true,
+    "MinStep": 30,
+    "Log": {
+        "LogLevel": "debug",
+        "Output":   "file"
+    }, 
+    "Http": {
+        "Enabled": false,
+        "Listen": "0.0.0.0:6060"
+    },
+    "Rpc": {
+        "Enabled": true,
+        "Listen": "0.0.0.0:8433"
+    },
+    "Socket": {
+        "Enabled": true,
+        "Listen": "0.0.0.0:4444",
+        "Timeout": 3600
+    },
+    "Judge": {
+        "Enabled": true,
+        "Batch": 200,
+        "ConnTimeout": 1000,
+        "CallTimeout": 5000,
+        "MaxConns": 32,
+        "MaxIdle": 32,
+        "Replicas": 500,
+        "Cluster": {
+            "Judge-00" : "127.0.0.1:6080"
+        }
+    },
+    "Graph": {
+        "Enabled": true,
+        "Batch": 200,
+        "ConnTimeout": 1000,
+        "CallTimeout": 5000,
+        "MaxConns": 32,
+        "MaxIdle": 32,
+        "Replicas": 500,
+        "Cluster": {
+            "Graph-00" : "127.0.0.1:6070"
+        }
+    },
+    "Tsdb": {
+        "Enabled": false,
+        "Batch": 200,
+        "ConnTimeout": 1000,
+        "CallTimeout": 5000,
+        "MaxConns": 32,
+        "MaxIdle": 32,
+        "Retry": 3,
+        "Address": "127.0.0.1:8088"
+    }
+}

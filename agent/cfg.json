@@ -1,0 +1,33 @@
+{
+    "Hostname": "JIDS_Agent",
+    "Ip": "10.12.209.156",
+    "UnixSockFile": "/tmp/suricata-bin/var/run/suricata/suricata-command.socket",
+    "Log": {
+        "LogLevel": "debug",
+        "Output":   "file"
+    },
+	"Heartbeat": {
+		"Enabled": true,
+		"Addr": "127.0.0.1:6030",
+		"Interval": 1,
+		"Timeout": 1000
+	},
+	"Transfer": {
+		"Enabled": true,
+		"Addrs": [
+            "127.0.0.1:8433"
+        ],
+        "Interval": 1,
+        "Timeout": 1000
+    },
+    "Http": {
+        "Enabled": true,
+        "Listen": ":80"
+    },
+    "DefaultTags" : {
+        "Region":       "Beijing",
+        "Az":           "Tucheng",
+        "Department":   "InfoSec",
+        "Group":        "CloudSec.IDS"
+    }
+}
