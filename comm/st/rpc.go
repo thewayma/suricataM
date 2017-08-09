@@ -1,12 +1,39 @@
 package st
 
 import (
+    "fmt"
 	"sync"
 	"time"
 	"math"
 	"net/rpc"
 	"github.com/toolkits/net"
+    ."github.com/thewayma/suricataM/comm/log"
 )
+
+type SimpleRpcResponse struct {
+    Code int `json:"code"`  //!< 0:success, 1:bad request
+}
+
+func (this *SimpleRpcResponse) String() string {
+    return fmt.Sprintf("<Code: %d>", this.Code)
+}
+
+type TransporterResponse struct {
+    Message string
+    Total   int
+    Invalid int
+    Latency int64
+}
+
+func (this *TransporterResponse) String() string {
+    return fmt.Sprintf(
+        "<Total=%v, Invalid:%v, Latency=%vms, Message:%s>",
+        this.Total,
+        this.Invalid,
+        this.Latency,
+        this.Message,
+    )
+}
 
 type RpcClient struct {
 	sync.Mutex
@@ -42,7 +69,7 @@ func (this *RpcClient) serverConn() error {
 			if retry > 3 {
 				return err
 			}
-			time.Sleep(time.Duration(math.Pow(2.0, float64(retry))) * time.Second)
+			time.Sleep(time.Duration(math.Pow(2.0, float64(retry))) * time.Second)  //!< 指数回退
 			retry++
 			continue
 		}
