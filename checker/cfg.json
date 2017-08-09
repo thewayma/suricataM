@@ -2,10 +2,6 @@
     "debug": true,
     "debugHost": "nil",
     "remain": 11,
-    "Log": {
-        "LogLevel": "debug",
-        "Output":   "file"
-    },
     "http": {
         "enabled": false,
         "listen": "0.0.0.0:6081"
@@ -15,7 +11,7 @@
         "listen": "0.0.0.0:6080"
     },
     "hbs": {
-        "servers": ["127.0.0.1:6030"],
+        "server":  "127.0.0.1:6030",
         "timeout": 300,
         "interval": 60
     },

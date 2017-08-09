@@ -5,10 +5,10 @@ import (
 )
 
 func Counter(metric string, tags map[string]string) string {
-    if tags == nil || len(tags) == 0 {
-        return metric
-    }
-    return fmt.Sprintf("%s/%s", metric, SortedTags(tags))
+	if tags == nil || len(tags) == 0 {
+		return metric
+	}
+	return fmt.Sprintf("%s/%s", metric, SortedTags(tags))
 }
 
 func PK(endpoint, metric string, tags map[string]string) string {

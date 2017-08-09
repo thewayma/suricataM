@@ -10,7 +10,7 @@ import (
 	. "github.com/thewayma/suricataM/comm/log"
 	. "github.com/thewayma/suricataM/comm/st"
 	"github.com/thewayma/suricataM/transporter/g"
-	//"github.com/thewayma/suricataM/transporter/tx"
+	"github.com/thewayma/suricataM/transporter/tx"
 )
 
 type Transfer struct{}
@@ -59,7 +59,7 @@ func RecvMetric(items []*MetricData, reply *TransporterResponse, from string) er
 	//!< sanity check已前移至agent上
 	cfg := g.Config()
 	if cfg.Judge.Enabled {
-		//tx.Push2JudgeSendQueue(items)
+		tx.Push2JudgeSendQueue(items)
 	}
 
 	/*

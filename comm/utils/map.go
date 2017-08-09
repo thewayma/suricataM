@@ -8,15 +8,15 @@ import (
 
 // key升序排序
 func KeysOfMap(m map[string]string) []string {
-    keys := make(sort.StringSlice, len(m))
-    i := 0
-    for key := range m {
-        keys[i] = key
-        i++
-    }
+	keys := make(sort.StringSlice, len(m))
+	i := 0
+	for key := range m {
+		keys[i] = key
+		i++
+	}
 
-    keys.Sort()
-    return []string(keys)
+	keys.Sort()
+	return []string(keys)
 }
 
 // 以key排序, 返回用","拼接而成的字符串
@@ -65,7 +65,7 @@ func DictedTagstring(s string) map[string]string {
 	tags := strings.Split(s, ",")
 	for _, tag := range tags {
 		tag_pair := strings.SplitN(tag, "=", 2)
-		if len(tag_pair) == 2 {						//!< tag1=v1=v2, 切分成 key:tag1, value:v1=v2
+		if len(tag_pair) == 2 { //!< tag1=v1=v2, 切分成 key:tag1, value:v1=v2
 			tag_dict[tag_pair[0]] = tag_pair[1]
 		}
 	}
@@ -87,7 +87,7 @@ func SplitTagsString(s string) (err error, tags map[string]string) {
 		tag_pair := strings.SplitN(tag, "=", 2)
 		if len(tag_pair) == 2 {
 			tags[tag_pair[0]] = tag_pair[1]
-		} else {									//!< 若存在tag1=v1=v2, 则返回错误
+		} else { //!< 若存在tag1=v1=v2, 则返回错误
 			err = fmt.Errorf("bad tag %s", tag)
 			return
 		}

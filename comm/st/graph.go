@@ -2,8 +2,8 @@ package st
 
 import (
 	"fmt"
-	"math"
 	"github.com/thewayma/suricataM/comm/utils"
+	"math"
 )
 
 // DsType 即RRD中的Datasource的类型：GAUGE|COUNTER|DERIVE
@@ -143,7 +143,7 @@ type GraphFullyInfo struct {
 
 type GraphLastParam struct {
 	ndpoint string `json:"endpoint"`
-	Counter  string `json:"counter"`
+	Counter string `json:"counter"`
 }
 
 type GraphLastResp struct {
