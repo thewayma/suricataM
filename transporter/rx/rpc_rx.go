@@ -1,15 +1,15 @@
 package rx
 
 import (
-	"time"
 	"log"
 	"net"
 	"net/rpc"
 	"net/rpc/jsonrpc"
+	"time"
 
-    ."github.com/thewayma/suricataM/comm/log"
-    ."github.com/thewayma/suricataM/comm/st"
-    "github.com/thewayma/suricataM/transporter/g"
+	. "github.com/thewayma/suricataM/comm/log"
+	. "github.com/thewayma/suricataM/comm/st"
+	"github.com/thewayma/suricataM/transporter/g"
 	//"github.com/thewayma/suricataM/transporter/tx"
 )
 
@@ -54,29 +54,29 @@ func RecvMetric(items []*MetricData, reply *TransporterResponse, from string) er
 	start := time.Now()
 	reply.Invalid = 0
 
-    Log.Trace("Transporter <= Agent, Total=%d, MetricData[0]=%v", len(items), items[0])
+	Log.Trace("Transporter <= Agent, Total=%d, MetricData[0]=%v", len(items), items[0])
 
-    //!< sanity check已前移至agent上
+	//!< sanity check已前移至agent上
 	cfg := g.Config()
 	if cfg.Judge.Enabled {
 		//tx.Push2JudgeSendQueue(items)
 	}
 
-    /*
-	if cfg.Graph.Enabled {
-		tx.Push2GraphSendQueue(items)
-	}
+	/*
+		if cfg.Graph.Enabled {
+			tx.Push2GraphSendQueue(items)
+		}
 
-	if cfg.Tsdb.Enabled {
-		tx.Push2TsdbSendQueue(items)
-	}
-    */
+		if cfg.Tsdb.Enabled {
+			tx.Push2TsdbSendQueue(items)
+		}
+	*/
 
 	reply.Message = "ok"
-	reply.Total   = len(items)
+	reply.Total = len(items)
 	reply.Latency = (time.Now().UnixNano() - start.UnixNano()) / 1000000
 
-    Log.Trace("Transporter => Agent, TransferResp=%v", reply)
+	Log.Trace("Transporter => Agent, TransferResp=%v", reply)
 
 	return nil
 }

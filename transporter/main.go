@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	_"github.com/thewayma/suricataM/comm/log"
+	_ "github.com/thewayma/suricataM/comm/log"
 	"github.com/thewayma/suricataM/transporter/g"
 	"github.com/thewayma/suricataM/transporter/rx"
 	"github.com/thewayma/suricataM/transporter/tx"

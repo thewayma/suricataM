@@ -1,8 +1,8 @@
 package tx
 
 import (
-	"github.com/thewayma/suricataM/transporter/g"
 	"github.com/thewayma/suricataM/comm/utils"
+	"github.com/thewayma/suricataM/transporter/g"
 	"github.com/toolkits/consistent/rings"
 )
 

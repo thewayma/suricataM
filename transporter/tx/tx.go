@@ -1,9 +1,9 @@
 package tx
 
 import (
-	."github.com/thewayma/suricataM/comm/log"
-	."github.com/thewayma/suricataM/comm/st"
-	."github.com/thewayma/suricataM/comm/pool"
+	. "github.com/thewayma/suricataM/comm/log"
+	. "github.com/thewayma/suricataM/comm/pool"
+	. "github.com/thewayma/suricataM/comm/st"
 	"github.com/thewayma/suricataM/transporter/g"
 	rings "github.com/toolkits/consistent/rings"
 	nlist "github.com/toolkits/container/list"
@@ -35,8 +35,8 @@ var (
 // 连接池
 // node_address -> connection_pool
 var (
-	JudgeConnPools     *SafeRpcConnPools
-    //TsdbConnPools      *TsdbConnPoolHelper
+	JudgeConnPools *SafeRpcConnPools
+	//TsdbConnPools      *TsdbConnPoolHelper
 	//GraphConnPools     *SafeRpcConnPools
 )
 

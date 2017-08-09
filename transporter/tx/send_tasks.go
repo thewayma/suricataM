@@ -1,14 +1,14 @@
 package tx
 
 import (
-    //"fmt"
+	//"fmt"
 	"time"
 	//"bytes"
-	"github.com/toolkits/container/list"
-	"github.com/toolkits/concurrent/semaphore"
+	. "github.com/thewayma/suricataM/comm/log"
+	. "github.com/thewayma/suricataM/comm/st"
 	"github.com/thewayma/suricataM/transporter/g"
-	."github.com/thewayma/suricataM/comm/st"
-	."github.com/thewayma/suricataM/comm/log"
+	"github.com/toolkits/concurrent/semaphore"
+	"github.com/toolkits/container/list"
 )
 
 // send
@@ -23,9 +23,9 @@ func startSendTasks() {
 	// init semaphore
 	judgeConcurrent := cfg.Judge.MaxConns
 	graphConcurrent := cfg.Graph.MaxConns
-	tsdbConcurrent  := cfg.Tsdb.MaxConns
+	tsdbConcurrent := cfg.Tsdb.MaxConns
 
-    if judgeConcurrent < 1 {
+	if judgeConcurrent < 1 {
 		judgeConcurrent = 1
 	}
 
@@ -42,18 +42,18 @@ func startSendTasks() {
 		queue := JudgeQueues[node]
 		go forward2JudgeTask(queue, node, judgeConcurrent)
 	}
-/*
-	for node, nitem := range cfg.Graph.ClusterList {
-		for _, addr := range nitem.Addrs {
-			queue := GraphQueues[node+addr]
-			go forward2GraphTask(queue, node, addr, graphConcurrent)
+	/*
+		for node, nitem := range cfg.Graph.ClusterList {
+			for _, addr := range nitem.Addrs {
+				queue := GraphQueues[node+addr]
+				go forward2GraphTask(queue, node, addr, graphConcurrent)
+			}
 		}
-	}
 
-	if cfg.Tsdb.Enabled {
-		go forward2TsdbTask(tsdbConcurrent)
-	}
-    */
+		if cfg.Tsdb.Enabled {
+			go forward2TsdbTask(tsdbConcurrent)
+		}
+	*/
 }
 
 // Judge定时任务, 将 Judge发送缓存中的数据 通过rpc连接池 发送到Judge
@@ -73,7 +73,7 @@ func forward2JudgeTask(Q *list.SafeListLimited, node string, concurrent int) {
 		judgeItems := make([]*JudgeItem, count)
 		for i := 0; i < count; i++ {
 			judgeItems[i] = items[i].(*JudgeItem)
-            //fmt.Printf("%s\n", judgeItems[i])
+			//fmt.Printf("%s\n", judgeItems[i])
 		}
 
 		//	同步Call + 有限并发 进行发送

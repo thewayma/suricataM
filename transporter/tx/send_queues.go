@@ -12,16 +12,16 @@ func initSendQueues() {
 		Q := nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
 		JudgeQueues[node] = Q
 	}
-    /*
-	for node, nitem := range cfg.Graph.ClusterList {
-		for _, addr := range nitem.Addrs {
-			Q := nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
-			GraphQueues[node+addr] = Q
+	/*
+		for node, nitem := range cfg.Graph.ClusterList {
+			for _, addr := range nitem.Addrs {
+				Q := nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
+				GraphQueues[node+addr] = Q
+			}
 		}
-	}
 
-	if cfg.Tsdb.Enabled {
-		TsdbQueue = nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
-	}
-    */
+		if cfg.Tsdb.Enabled {
+			TsdbQueue = nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
+		}
+	*/
 }
