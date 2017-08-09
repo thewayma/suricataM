@@ -1,10 +1,6 @@
 {
     "Debug": true,
     "MinStep": 30,
-    "Log": {
-        "LogLevel": "debug",
-        "Output":   "file"
-    }, 
     "Http": {
         "Enabled": false,
         "Listen": "0.0.0.0:6060"

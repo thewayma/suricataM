@@ -4,6 +4,7 @@ import (
     "fmt"
     "strings"
     "strconv"
+    "github.com/thewayma/suricataM/comm/utils"
 )
 
 // 统一agent,transporter 传输数据格式, 减小内存拷贝
@@ -20,6 +21,13 @@ type MetricData struct {
 func (t *MetricData) String() string {
     return fmt.Sprintf("<MetricData Endpoint:%s, Metric:%s, Timestamp:%d, Step:%d, Value:%f, Tags:%v>",
         t.Endpoint, t.Metric, t.Timestamp, t.Step, t.Value, t.Tags)
+}
+
+func (r *MetricData) PK() string {
+    if r.Tags == nil || len(r.Tags) == 0 {
+        fmt.Sprintf("%s/%s", r.Endpoint, r.Metric)
+    }
+    return fmt.Sprintf("%s/%s/%s", r.Endpoint, r.Metric, utils.SortedTags(r.Tags))
 }
 
 func NewMetric(metric string, v interface{}, dataType string, tags ...string) *MetricData {
