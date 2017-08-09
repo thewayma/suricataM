@@ -19,11 +19,6 @@ var (
 	lock       = new(sync.RWMutex)
 )
 
-type LogConfig struct {
-	LogLevel string
-	Output   string
-}
-
 type HeartbeatConfig struct {
 	Enabled  bool
 	Addr     string
@@ -47,7 +42,6 @@ type GlobalConfig struct {
 	Hostname     string
 	Ip           string
 	UnixSockFile string
-	Log          *LogConfig
 	Heartbeat    *HeartbeatConfig
 	Transfer     *TransferConfig
 	Http         *HttpConfig

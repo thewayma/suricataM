@@ -2,10 +2,6 @@
     "Hostname": "JIDS_Agent",
     "Ip": "10.12.209.156",
     "UnixSockFile": "/tmp/suricata-bin/var/run/suricata/suricata-command.socket",
-    "Log": {
-        "LogLevel": "debug",
-        "Output":   "file"
-    },
 	"Heartbeat": {
 		"Enabled": true,
 		"Addr": "127.0.0.1:6030",
