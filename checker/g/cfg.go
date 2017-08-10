@@ -39,8 +39,6 @@ type AlarmConfig struct {
 }
 
 type GlobalConfig struct {
-	Debug     bool         `json:"debug"`
-	DebugHost string       `json:"debugHost"`
 	Remain    int          `json:"remain"`
 	Http      *HttpConfig  `json:"http"`
 	Rpc       *RpcConfig   `json:"rpc"`

@@ -1,6 +1,4 @@
 {
-    "debug": true,
-    "debugHost": "nil",
     "remain": 11,
     "http": {
         "enabled": false,
