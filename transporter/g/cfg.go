@@ -24,19 +24,7 @@ type SocketConfig struct {
 	Timeout int
 }
 
-type JudgeConfig struct {
-	Enabled     bool
-	Batch       int
-	ConnTimeout int
-	CallTimeout int
-	MaxConns    int
-	MaxIdle     int
-	Replicas    int
-	Cluster     map[string]string
-	ClusterList map[string]*ClusterNode
-}
-
-type GraphConfig struct {
+type CheckerConfig struct {
 	Enabled     bool
 	Batch       int
 	ConnTimeout int
@@ -65,9 +53,8 @@ type GlobalConfig struct {
 	Http    *HttpConfig
 	Rpc     *RpcConfig
 	Socket  *SocketConfig
-	Judge   *JudgeConfig
-	Graph   *GraphConfig
-	Tsdb    *TsdbConfig //!< influxdb
+	Checker *CheckerConfig  //!< policyChecker
+	Tsdb    *TsdbConfig     //!< influxdb
 }
 
 var (
@@ -105,8 +92,7 @@ func ParseConfig(cfg string) {
 	}
 
 	// split cluster config
-	c.Judge.ClusterList = formatClusterItems(c.Judge.Cluster)
-	c.Graph.ClusterList = formatClusterItems(c.Graph.Cluster)
+	c.Checker.ClusterList = formatClusterItems(c.Checker.Cluster)
 
 	configLock.Lock()
 	defer configLock.Unlock()

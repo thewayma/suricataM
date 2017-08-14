@@ -21,16 +21,11 @@ func startSendTasks() {
 	cfg := g.Config()
 
 	// init semaphore
-	judgeConcurrent := cfg.Judge.MaxConns
-	graphConcurrent := cfg.Graph.MaxConns
+	checkerConcurrent := cfg.Checker.MaxConns
 	tsdbConcurrent := cfg.Tsdb.MaxConns
 
-	if judgeConcurrent < 1 {
-		judgeConcurrent = 1
-	}
-
-	if graphConcurrent < 1 {
-		graphConcurrent = 1
+	if checkerConcurrent < 1 {
+		checkerConcurrent = 1
 	}
 
 	if tsdbConcurrent < 1 {
@@ -38,9 +33,9 @@ func startSendTasks() {
 	}
 
 	// init send go-routines
-	for node := range cfg.Judge.Cluster {
-		queue := JudgeQueues[node]
-		go forward2JudgeTask(queue, node, judgeConcurrent)
+	for node := range cfg.Checker.Cluster {
+		queue := CheckerQueues[node]
+		go forward2CheckerTask(queue, node, checkerConcurrent)
 	}
 	/*
 		for node, nitem := range cfg.Graph.ClusterList {
@@ -56,10 +51,9 @@ func startSendTasks() {
 	*/
 }
 
-// Judge定时任务, 将 Judge发送缓存中的数据 通过rpc连接池 发送到Judge
-func forward2JudgeTask(Q *list.SafeListLimited, node string, concurrent int) {
-	batch := g.Config().Judge.Batch // 一次发送,最多batch条数据
-	addr := g.Config().Judge.Cluster[node]
+func forward2CheckerTask(Q *list.SafeListLimited, node string, concurrent int) {
+	batch := g.Config().Checker.Batch // 一次发送,最多batch条数据
+	addr := g.Config().Checker.Cluster[node]
 	sema := semaphore.NewSemaphore(concurrent)
 
 	for {
@@ -70,22 +64,21 @@ func forward2JudgeTask(Q *list.SafeListLimited, node string, concurrent int) {
 			continue
 		}
 
-		judgeItems := make([]*JudgeItem, count)
+		checkerItems := make([]*CheckerItem, count)
 		for i := 0; i < count; i++ {
-			judgeItems[i] = items[i].(*JudgeItem)
-			//fmt.Printf("%s\n", judgeItems[i])
+		    checkerItems[i] = items[i].(*CheckerItem)
 		}
 
 		//	同步Call + 有限并发 进行发送
 		sema.Acquire()
-		go func(addr string, judgeItems []*JudgeItem, count int) {
+		go func(addr string, checkerItems []*CheckerItem, count int) {
 			defer sema.Release()
 
 			resp := &SimpleRpcResponse{}
 			var err error
 			sendOk := false
 			for i := 0; i < 3; i++ { //最多重试3次
-				err = JudgeConnPools.Call(addr, "Judge.Send", judgeItems, resp)
+				err = CheckerConnPools.Call(addr, "Checker.Send", checkerItems, resp)
 				if err == nil {
 					sendOk = true
 					break
@@ -95,12 +88,12 @@ func forward2JudgeTask(Q *list.SafeListLimited, node string, concurrent int) {
 
 			// statistics
 			if !sendOk {
-				Log.Error("forward2JudgeTask send judge %s:%s fail: %v", node, addr, err)
-				//proc.SendToJudgeFailCnt.IncrBy(int64(count))
+				Log.Error("forward2CheckerTask send checker %s:%s fail: %v", node, addr, err)
+				//proc.SendToCheckerFailCnt.IncrBy(int64(count))
 			} else {
-				//proc.SendToJudgeCnt.IncrBy(int64(count))
+				//proc.SendToCheckerCnt.IncrBy(int64(count))
 			}
-		}(addr, judgeItems, count)
+		}(addr, checkerItems, count)
 	}
 }
 

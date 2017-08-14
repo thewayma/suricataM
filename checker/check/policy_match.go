@@ -8,12 +8,12 @@ import (
 	"github.com/thewayma/suricataM/comm/st"
 )
 
-func Judge(L *SafeLinkedList, firstItem *st.JudgeItem, now int64) {
+func Checker(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {
 	CheckStrategy(L, firstItem, now)
 	//CheckExpression(L, firstItem, now)    //!< 暂时不需要expression机制
 }
 
-func CheckStrategy(L *SafeLinkedList, firstItem *st.JudgeItem, now int64) {
+func CheckStrategy(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {
 	key := fmt.Sprintf("%s/%s", firstItem.Endpoint, firstItem.Metric)
 	strategyMap := g.StrategyMap.Get()
 	strategies, exists := strategyMap[key]
@@ -21,8 +21,10 @@ func CheckStrategy(L *SafeLinkedList, firstItem *st.JudgeItem, now int64) {
 		return
 	}
 
+    Log.Info(firstItem)
+
 	for _, s := range strategies {
-		// 因为key仅仅是endpoint和metric，所以得到的strategies并不一定是与当前judgeItem相关的
+		// 因为key仅仅是endpoint和metric，所以得到的strategies并不一定是与当前CheckerItem相关的
 		// 比如lg-dinp-docker01.bj配置了两个proc.num的策略，一个name=docker，一个name=agent
 		// 所以此处要排除掉一部分
 		related := true
@@ -37,11 +39,11 @@ func CheckStrategy(L *SafeLinkedList, firstItem *st.JudgeItem, now int64) {
 			continue
 		}
 
-		judgeItemWithStrategy(L, s, firstItem, now)
+		checkItemWithStrategy(L, s, firstItem, now)
 	}
 }
 
-func judgeItemWithStrategy(L *SafeLinkedList, strategy st.Strategy, firstItem *st.JudgeItem, now int64) {
+func checkItemWithStrategy(L *SafeLinkedList, strategy st.Strategy, firstItem *st.CheckerItem, now int64) {
 	fn, err := ParseFuncFromString(strategy.Func, strategy.Operator, strategy.RightValue)
 	if err != nil {
 		Log.Error("[ERROR] parse func %s fail: %v. strategy id: %d", strategy.Func, err, strategy.Id)
@@ -82,7 +84,7 @@ func sendEvent(event *st.Event) {
 	rc.Do("LPUSH", redisKey, string(bs))
 }
 
-func buildKeysFromMetricAndTags(item *st.JudgeItem) (keys []string) {
+func buildKeysFromMetricAndTags(item *st.CheckerItem) (keys []string) {
 	for k, v := range item.Tags {
 		keys = append(keys, fmt.Sprintf("%s/%s=%s", item.Metric, k, v))
 	}
@@ -90,7 +92,7 @@ func buildKeysFromMetricAndTags(item *st.JudgeItem) (keys []string) {
 	return
 }
 
-func copyItemTags(item *st.JudgeItem) map[string]string {
+func copyItemTags(item *st.CheckerItem) map[string]string {
 	ret := make(map[string]string)
 	ret["endpoint"] = item.Endpoint
 	if item.Tags != nil && len(item.Tags) > 0 {

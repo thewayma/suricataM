@@ -9,35 +9,23 @@ import (
 func initConnPools() {
 	cfg := g.Config()
 
-	// judge
-	judgeInstances := set.NewStringSet()
-	for _, instance := range cfg.Judge.Cluster {
-		judgeInstances.Add(instance)
+	checkerInstances := set.NewStringSet()
+	for _, instance := range cfg.Checker.Cluster {
+		checkerInstances.Add(instance)
 	}
-	JudgeConnPools = CreateSafeRpcConnPools(cfg.Judge.MaxConns, cfg.Judge.MaxIdle,
-		cfg.Judge.ConnTimeout, cfg.Judge.CallTimeout, judgeInstances.ToSlice())
+	CheckerConnPools = CreateSafeRpcConnPools(cfg.Checker.MaxConns, cfg.Checker.MaxIdle,
+		cfg.Checker.ConnTimeout, cfg.Checker.CallTimeout, checkerInstances.ToSlice())
 
 	/*
 		// tsdb
 		if cfg.Tsdb.Enabled {
 			TsdbConnPoolHelper = NewTsdbConnPoolHelper(cfg.Tsdb.Address, cfg.Tsdb.MaxConns, cfg.Tsdb.MaxIdle, cfg.Tsdb.ConnTimeout, cfg.Tsdb.CallTimeout)
 		}
-
-		// graph
-		graphInstances := set.NewSafeSet()
-		for _, nitem := range cfg.Graph.ClusterList {
-			for _, addr := range nitem.Addrs {
-				graphInstances.Add(addr)
-			}
-		}
-		GraphConnPools = CreateSafeRpcConnPools(cfg.Graph.MaxConns, cfg.Graph.MaxIdle,
-			cfg.Graph.ConnTimeout, cfg.Graph.CallTimeout, graphInstances.ToSlice())
 	*/
 
 }
 
 func DestroyConnPools() {
-	JudgeConnPools.Destroy()
-	//GraphConnPools.Destroy()
+	CheckerConnPools.Destroy()
 	//TsdbConnPoolHelper.Destroy()
 }

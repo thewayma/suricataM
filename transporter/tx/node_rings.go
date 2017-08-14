@@ -10,6 +10,5 @@ import (
 func initNodeRings() {
 	cfg := g.Config()
 
-	JudgeNodeRing = rings.NewConsistentHashNodesRing(int32(cfg.Judge.Replicas), utils.KeysOfMap(cfg.Judge.Cluster))
-	//GraphNodeRing = rings.NewConsistentHashNodesRing(int32(cfg.Graph.Replicas), KeysOfMap(cfg.Graph.Cluster))
+	CheckerNodeRing = rings.NewConsistentHashNodesRing(int32(cfg.Checker.Replicas), utils.KeysOfMap(cfg.Checker.Cluster))
 }

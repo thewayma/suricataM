@@ -11,13 +11,13 @@ import (
 	"time"
 )
 
-type Judge struct{}
+type Checker struct{}
 
-func (this *Judge) Send(items []*st.JudgeItem, resp *st.SimpleRpcResponse) error {
+func (this *Checker) Send(items []*st.CheckerItem, resp *st.SimpleRpcResponse) error {
 	remain := g.Config().Remain
 	now := time.Now().Unix()
 
-	Log.Trace("Checker <= Transporter, Len=%d, JudgeItem[0]=%v", len(items), items[0])
+	Log.Trace("Checker <= Transporter, Len=%d, CheckerItem[0]=%v", len(items), items[0])
 
 	for _, item := range items {
 		pk := item.PrimaryKey()
@@ -43,7 +43,7 @@ func RpcStart() {
 		Log.Trace("Checker <= Transporter, rpc listening=%v", addr)
 	}
 
-	rpc.Register(new(Judge))
+	rpc.Register(new(Checker))
 
 	for {
 		conn, err := listener.Accept()

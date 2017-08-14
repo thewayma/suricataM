@@ -14,7 +14,7 @@
         "Listen": "0.0.0.0:4444",
         "Timeout": 3600
     },
-    "Judge": {
+    "Checker": {
         "Enabled": true,
         "Batch": 200,
         "ConnTimeout": 1000,
@@ -23,19 +23,7 @@
         "MaxIdle": 32,
         "Replicas": 500,
         "Cluster": {
-            "Judge-00" : "127.0.0.1:6080"
-        }
-    },
-    "Graph": {
-        "Enabled": true,
-        "Batch": 200,
-        "ConnTimeout": 1000,
-        "CallTimeout": 5000,
-        "MaxConns": 32,
-        "MaxIdle": 32,
-        "Replicas": 500,
-        "Cluster": {
-            "Graph-00" : "127.0.0.1:6070"
+            "Checker-00" : "127.0.0.1:6080"
         }
     },
     "Tsdb": {

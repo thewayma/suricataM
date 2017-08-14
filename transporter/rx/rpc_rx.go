@@ -58,8 +58,8 @@ func RecvMetric(items []*MetricData, reply *TransporterResponse, from string) er
 
 	//!< sanity check已前移至agent上
 	cfg := g.Config()
-	if cfg.Judge.Enabled {
-		tx.Push2JudgeSendQueue(items)
+	if cfg.Checker.Enabled {
+		tx.Push2CheckerSendQueue(items)
 	}
 
 	/*

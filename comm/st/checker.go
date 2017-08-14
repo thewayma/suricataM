@@ -5,26 +5,26 @@ import (
 	"github.com/thewayma/suricataM/comm/utils"
 )
 
-type JudgeItem struct {
+type CheckerItem struct {
 	Endpoint  string            `json:"endpoint"`
 	Metric    string            `json:"metric"`
 	Value     float64           `json:"value"`
 	Timestamp int64             `json:"timestamp"`
-	JudgeType string            `json:"judgeType"`
+	Type string                 `json:"judgeType"`
 	Tags      map[string]string `json:"tags"`
 }
 
-func (this *JudgeItem) String() string {
+func (this *CheckerItem) String() string {
 	return fmt.Sprintf("<Endpoint:%s, Metric:%s, Value:%f, Timestamp:%d, JudgeType:%s Tags:%v>",
 		this.Endpoint,
 		this.Metric,
 		this.Value,
 		this.Timestamp,
-		this.JudgeType,
+		this.Type,
 		this.Tags)
 }
 
-func (this *JudgeItem) PrimaryKey() string {
+func (this *CheckerItem) PrimaryKey() string {
 	return utils.Md5(utils.PK(this.Endpoint, this.Metric, this.Tags))
 }
 

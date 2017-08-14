@@ -11,17 +11,17 @@ type SafeLinkedList struct {
 	L *list.List
 }
 
-func (this *SafeLinkedList) ToSlice() []*st.JudgeItem {
+func (this *SafeLinkedList) ToSlice() []*st.CheckerItem {
 	this.RLock()
 	defer this.RUnlock()
 	sz := this.L.Len()
 	if sz == 0 {
-		return []*st.JudgeItem{}
+		return []*st.CheckerItem{}
 	}
 
-	ret := make([]*st.JudgeItem, 0, sz)
+	ret := make([]*st.CheckerItem, 0, sz)
 	for e := this.L.Front(); e != nil; e = e.Next() {
-		ret = append(ret, e.Value.(*st.JudgeItem))
+		ret = append(ret, e.Value.(*st.CheckerItem))
 	}
 	return ret
 }
@@ -41,13 +41,13 @@ func (this *SafeLinkedList) HistoryData(limit int) ([]*st.HistoryData, bool) {
 	}
 
 	firstElement := this.Front()
-	firstItem := firstElement.Value.(*st.JudgeItem)
+	firstItem := firstElement.Value.(*st.CheckerItem)
 
 	var vs []*st.HistoryData
 	isEnough := true
 
-	judgeType := firstItem.JudgeType[0]
-	if judgeType == 'G' || judgeType == 'g' {
+    checkerType := firstItem.Type[0]
+	if checkerType == 'G' || checkerType == 'g' {
 		if size < limit {
 			// 有多少获取多少
 			limit = size
@@ -60,8 +60,8 @@ func (this *SafeLinkedList) HistoryData(limit int) ([]*st.HistoryData, bool) {
 		for i < limit {
 			nextElement := currentElement.Next()
 			vs[i] = &st.HistoryData{
-				Timestamp: nextElement.Value.(*st.JudgeItem).Timestamp,
-				Value:     nextElement.Value.(*st.JudgeItem).Value,
+				Timestamp: nextElement.Value.(*st.CheckerItem).Timestamp,
+				Value:     nextElement.Value.(*st.CheckerItem).Value,
 			}
 			i++
 			currentElement = nextElement
@@ -78,10 +78,10 @@ func (this *SafeLinkedList) HistoryData(limit int) ([]*st.HistoryData, bool) {
 		currentElement := firstElement
 		for i < limit {
 			nextElement := currentElement.Next()
-			diffVal := currentElement.Value.(*st.JudgeItem).Value - nextElement.Value.(*st.JudgeItem).Value
-			diffTs := currentElement.Value.(*st.JudgeItem).Timestamp - nextElement.Value.(*st.JudgeItem).Timestamp
+			diffVal := currentElement.Value.(*st.CheckerItem).Value - nextElement.Value.(*st.CheckerItem).Value
+			diffTs := currentElement.Value.(*st.CheckerItem).Timestamp - nextElement.Value.(*st.CheckerItem).Timestamp
 			vs[i] = &st.HistoryData{
-				Timestamp: currentElement.Value.(*st.JudgeItem).Timestamp,
+				Timestamp: currentElement.Value.(*st.CheckerItem).Timestamp,
 				Value:     diffVal / float64(diffTs),
 			}
 			i++
@@ -98,15 +98,14 @@ func (this *SafeLinkedList) PushFront(v interface{}) *list.Element {
 	return this.L.PushFront(v)
 }
 
-// @return needJudge 如果是false不需要做judge，因为新上来的数据不合法
-func (this *SafeLinkedList) PushFrontAndMaintain(v *st.JudgeItem, maxCount int) bool {
+func (this *SafeLinkedList) PushFrontAndMaintain(v *st.CheckerItem, maxCount int) bool {
 	this.Lock()
 	defer this.Unlock()
 
 	sz := this.L.Len()
 	if sz > 0 {
 		// 新push上来的数据有可能重复了，或者timestamp不对，这种数据要丢掉
-		if v.Timestamp <= this.L.Front().Value.(*st.JudgeItem).Timestamp || v.Timestamp <= 0 {
+		if v.Timestamp <= this.L.Front().Value.(*st.CheckerItem).Timestamp || v.Timestamp <= 0 {
 			return false
 		}
 	}
