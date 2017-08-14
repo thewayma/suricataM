@@ -50,6 +50,10 @@ func Start() {
 	Log.Trace("Tx.RPC Init Finished")
 }
 
+func alignTs(ts int64, period int64) int64 {
+	return ts - ts%period
+}
+
 // 将数据 打入 某个Checker的发送缓存队列
 func Push2CheckerSendQueue(items []*MetricData) {
 	for _, item := range items {
@@ -65,7 +69,7 @@ func Push2CheckerSendQueue(items []*MetricData) {
 		if step < MinStep {
 			step = MinStep
 		}
-		ts := alignTs(item.Timestamp, int64(step))
+		ts := alignTs(item.Timestamp, int64(step)) // 按step倍数下对齐
 
 		checkerItem := &CheckerItem{
 			Endpoint:  item.Endpoint,
@@ -110,8 +114,4 @@ func convert2TsdbItem(d *MetricData) *TsdbItem {
 	t.Field[d.Metric] = d.Value
 	t.Timestamp = d.Timestamp
 	return &t
-}
-
-func alignTs(ts int64, period int64) int64 {
-	return ts - ts%period
 }

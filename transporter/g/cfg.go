@@ -36,7 +36,6 @@ type TsdbConfig struct {
 }
 
 type GlobalConfig struct {
-	Debug   bool
 	MinStep int
 	Rpc     *RpcConfig
 	Checker *CheckerConfig //!< policyChecker

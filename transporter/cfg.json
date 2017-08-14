@@ -1,5 +1,4 @@
 {
-    "Debug": true,
     "MinStep": 30,
     "Rpc": {
         "Enabled": true,
@@ -14,7 +13,7 @@
         "MaxIdle": 32,
         "Replicas": 500,
         "Cluster": {
-            "Checker-00" : "127.0.0.1:6080"
+            "Checker-1" : "127.0.0.1:6080"
         }
     },
     "Tsdb": {
