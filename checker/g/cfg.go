@@ -34,7 +34,7 @@ type AlarmConfig struct {
 }
 
 type GlobalConfig struct {
-	MaxLinklistNum int          `json:"remain"`
+	MaxLinklistNum int          `json:"maxLinklistNum"`
 	Rpc            *RpcConfig   `json:"rpc"`
 	Hbs            *HbsConfig   `json:"hbs"`
 	Alarm          *AlarmConfig `json:"alarm"`
