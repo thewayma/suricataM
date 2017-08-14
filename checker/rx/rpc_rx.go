@@ -14,14 +14,14 @@ import (
 type Checker struct{}
 
 func (this *Checker) Send(items []*st.CheckerItem, resp *st.SimpleRpcResponse) error {
-	remain := g.Config().Remain
+	max := g.Config().MaxLinklistNum
 	now := time.Now().Unix()
 
 	Log.Trace("Checker <= Transporter, Len=%d, CheckerItem[0]=%v", len(items), items[0])
 
 	for _, item := range items {
 		pk := item.PrimaryKey()
-		check.HistoryBigMap[pk[0:2]].PushFrontAndMaintain(pk, item, remain, now)
+		check.HistoryBigMap[pk[0:2]].PushFrontAndMaintain(pk, item, max, now)
 	}
 	return nil
 }

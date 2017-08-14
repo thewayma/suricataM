@@ -7,11 +7,6 @@ import (
 	"sync"
 )
 
-type HttpConfig struct {
-	Enabled bool   `json:"enabled"`
-	Listen  string `json:"listen"`
-}
-
 type RpcConfig struct {
 	Enabled bool   `json:"enabled"`
 	Listen  string `json:"listen"`
@@ -39,11 +34,10 @@ type AlarmConfig struct {
 }
 
 type GlobalConfig struct {
-	Remain int          `json:"remain"`
-	Http   *HttpConfig  `json:"http"`
-	Rpc    *RpcConfig   `json:"rpc"`
-	Hbs    *HbsConfig   `json:"hbs"`
-	Alarm  *AlarmConfig `json:"alarm"`
+	MaxLinklistNum int          `json:"remain"`
+	Rpc            *RpcConfig   `json:"rpc"`
+	Hbs            *HbsConfig   `json:"hbs"`
+	Alarm          *AlarmConfig `json:"alarm"`
 }
 
 var (

@@ -1,9 +1,5 @@
 {
-    "remain": 11,
-    "http": {
-        "enabled": false,
-        "listen": "0.0.0.0:6081"
-    },
+    "maxLinklistNum": 11,
     "rpc": {
         "enabled": true,
         "listen": "0.0.0.0:6080"
