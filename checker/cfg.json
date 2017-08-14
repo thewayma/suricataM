@@ -1,24 +1,24 @@
 {
-    "maxLinklistNum": 11,
-    "rpc": {
-        "enabled": true,
-        "listen": "0.0.0.0:6080"
+    "MaxLinklistNum": 11,
+    "Rpc": {
+        "Enabled": true,
+        "Listen": "0.0.0.0:6080"
     },
-    "hbs": {
-        "server":  "127.0.0.1:6030",
-        "timeout": 300,
-        "interval": 60
+    "Hbs": {
+        "Server":  "127.0.0.1:6030",
+        "Timeout": 300,
+        "Interval": 60
     },
-    "alarm": {
-        "enabled": true,
-        "minInterval": 300,
-        "queuePattern": "event:p%v",
-        "redis": {
-            "dsn": "127.0.0.1:6379",
-            "maxIdle": 5,
-            "connTimeout": 5000,
-            "readTimeout": 5000,
-            "writeTimeout": 5000
+    "Alarm": {
+        "Enabled": true,
+        "MinInterval": 300,
+        "QueuePattern": "event:p%v",
+        "Redis": {
+            "Address": "127.0.0.1:6379",
+            "MaxIdle": 5,
+            "ConnTimeout": 5000,
+            "ReadTimeout": 5000,
+            "WriteTimeout": 5000
         }
     }
 }

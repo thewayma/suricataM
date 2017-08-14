@@ -13,7 +13,7 @@ func InitRedisConnPool() {
 		return
 	}
 
-	dsn := Config().Alarm.Redis.Dsn
+	addr := Config().Alarm.Redis.Address
 	maxIdle := Config().Alarm.Redis.MaxIdle
 	idleTimeout := 240 * time.Second
 
@@ -25,7 +25,7 @@ func InitRedisConnPool() {
 		MaxIdle:     maxIdle,
 		IdleTimeout: idleTimeout,
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.DialTimeout("tcp", dsn, connTimeout, readTimeout, writeTimeout)
+			c, err := redis.DialTimeout("tcp", addr, connTimeout, readTimeout, writeTimeout)
 			if err != nil {
 				return nil, err
 			}

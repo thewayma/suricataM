@@ -8,36 +8,36 @@ import (
 )
 
 type RpcConfig struct {
-	Enabled bool   `json:"enabled"`
-	Listen  string `json:"listen"`
+	Enabled bool
+	Listen  string
 }
 
 type HbsConfig struct {
-	Server   string `json:"server"`
-	Timeout  int64  `json:"timeout"`
-	Interval int64  `json:"interval"`
+	Server   string
+	Timeout  int64
+	Interval int64
 }
 
 type RedisConfig struct {
-	Dsn          string `json:"dsn"`
-	MaxIdle      int    `json:"maxIdle"`
-	ConnTimeout  int    `json:"connTimeout"`
-	ReadTimeout  int    `json:"readTimeout"`
-	WriteTimeout int    `json:"writeTimeout"`
+	Address      string
+	MaxIdle      int
+	ConnTimeout  int
+	ReadTimeout  int
+	WriteTimeout int
 }
 
 type AlarmConfig struct {
-	Enabled      bool         `json:"enabled"`
-	MinInterval  int64        `json:"minInterval"`
-	QueuePattern string       `json:"queuePattern"`
-	Redis        *RedisConfig `json:"redis"`
+	Enabled      bool
+	MinInterval  int64
+	QueuePattern string
+	Redis        *RedisConfig
 }
 
 type GlobalConfig struct {
-	MaxLinklistNum int          `json:"maxLinklistNum"`
-	Rpc            *RpcConfig   `json:"rpc"`
-	Hbs            *HbsConfig   `json:"hbs"`
-	Alarm          *AlarmConfig `json:"alarm"`
+	MaxLinklistNum int
+	Rpc            *RpcConfig
+	Hbs            *HbsConfig
+	Alarm          *AlarmConfig
 }
 
 var (
