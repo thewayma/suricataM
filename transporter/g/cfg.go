@@ -8,20 +8,9 @@ import (
 	"sync"
 )
 
-type HttpConfig struct {
-	Enabled bool
-	Listen  string
-}
-
 type RpcConfig struct {
 	Enabled bool
 	Listen  string
-}
-
-type SocketConfig struct {
-	Enabled bool
-	Listen  string
-	Timeout int
 }
 
 type CheckerConfig struct {
@@ -49,9 +38,7 @@ type TsdbConfig struct {
 type GlobalConfig struct {
 	Debug   bool
 	MinStep int
-	Http    *HttpConfig
 	Rpc     *RpcConfig
-	Socket  *SocketConfig
 	Checker *CheckerConfig //!< policyChecker
 	Tsdb    *TsdbConfig    //!< influxdb
 }

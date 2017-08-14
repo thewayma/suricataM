@@ -1,18 +1,9 @@
 {
     "Debug": true,
     "MinStep": 30,
-    "Http": {
-        "Enabled": false,
-        "Listen": "0.0.0.0:6060"
-    },
     "Rpc": {
         "Enabled": true,
         "Listen": "0.0.0.0:8433"
-    },
-    "Socket": {
-        "Enabled": true,
-        "Listen": "0.0.0.0:4444",
-        "Timeout": 3600
     },
     "Checker": {
         "Enabled": true,
