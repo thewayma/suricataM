@@ -13,19 +13,11 @@ func initConnPools() {
 	for _, instance := range cfg.Checker.Cluster {
 		checkerInstances.Add(instance)
 	}
-	CheckerConnPools = CreateSafeRpcConnPools(cfg.Checker.MaxConns, cfg.Checker.MaxIdle,
+
+	CheckerConnPools = CreateSafeRpcConnPools(cfg.Checker.MaxConcurrentConns, cfg.Checker.MaxIdle,
 		cfg.Checker.ConnTimeout, cfg.Checker.CallTimeout, checkerInstances.ToSlice())
-
-	/*
-		// tsdb
-		if cfg.Tsdb.Enabled {
-			TsdbConnPoolHelper = NewTsdbConnPoolHelper(cfg.Tsdb.Address, cfg.Tsdb.MaxConns, cfg.Tsdb.MaxIdle, cfg.Tsdb.ConnTimeout, cfg.Tsdb.CallTimeout)
-		}
-	*/
-
 }
 
 func DestroyConnPools() {
 	CheckerConnPools.Destroy()
-	//TsdbConnPoolHelper.Destroy()
 }

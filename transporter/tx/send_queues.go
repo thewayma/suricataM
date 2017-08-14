@@ -12,9 +12,8 @@ func initSendQueues() {
 		Q := nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
 		CheckerQueues[node] = Q
 	}
-	/*
-		if cfg.Tsdb.Enabled {
-			TsdbQueue = nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
-		}
-	*/
+
+	if cfg.Tsdb.Enabled {
+		TsdbQueue = nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
+	}
 }

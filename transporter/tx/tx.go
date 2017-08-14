@@ -7,6 +7,7 @@ import (
 	"github.com/thewayma/suricataM/transporter/g"
 	rings "github.com/toolkits/consistent/rings"
 	nlist "github.com/toolkits/container/list"
+	"strings"
 )
 
 const (
@@ -27,14 +28,13 @@ var (
 // node -> queue_of_data
 var (
 	CheckerQueues = make(map[string]*nlist.SafeListLimited)
-	//TsdbQueue   *nlist.SafeListLimited
+	TsdbQueue     *nlist.SafeListLimited
 )
 
 // 连接池
 // node_address -> connection_pool
 var (
 	CheckerConnPools *SafeRpcConnPools
-	//TsdbConnPools      *TsdbConnPoolHelper
 )
 
 func Start() {
@@ -85,32 +85,32 @@ func Push2CheckerSendQueue(items []*MetricData) {
 	}
 }
 
-/*
-// 将原始数据入到tsdb发送缓存队列
+// 将原始数据入到influxdb发送缓存队列
 func Push2TsdbSendQueue(items []*MetricData) {
 	for _, item := range items {
 		tsdbItem := convert2TsdbItem(item)
 		isSuccess := TsdbQueue.PushFront(tsdbItem)
 
 		if !isSuccess {
+			Log.Error("Push2TsdbSendQueue failure")
 			//proc.SendToTsdbDropCnt.Incr()
 		}
 	}
 }
 
-// 转化为tsdb格式
+// 转化为influxdb格式
 func convert2TsdbItem(d *MetricData) *TsdbItem {
-	t := TsdbItem{Tags: make(map[string]string)}
+	t := TsdbItem{Tags: make(map[string]string), Field: make(map[string]interface{})}
+
+	t.Name = strings.Split(d.Metric, ".")[0]
 	for k, v := range d.Tags {
 		t.Tags[k] = v
 	}
 	t.Tags["endpoint"] = d.Endpoint
-	t.Metric = d.Metric
+	t.Field[d.Metric] = d.Value
 	t.Timestamp = d.Timestamp
-	t.Value = d.Value
 	return &t
 }
-*/
 
 func alignTs(ts int64, period int64) int64 {
 	return ts - ts%period

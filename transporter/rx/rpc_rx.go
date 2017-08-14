@@ -62,15 +62,9 @@ func RecvMetric(items []*MetricData, reply *TransporterResponse, from string) er
 		tx.Push2CheckerSendQueue(items)
 	}
 
-	/*
-		if cfg.Graph.Enabled {
-			tx.Push2GraphSendQueue(items)
-		}
-
-		if cfg.Tsdb.Enabled {
-			tx.Push2TsdbSendQueue(items)
-		}
-	*/
+	if cfg.Tsdb.Enabled {
+		tx.Push2TsdbSendQueue(items)
+	}
 
 	reply.Message = "ok"
 	reply.Total = len(items)

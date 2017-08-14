@@ -25,26 +25,25 @@ type SocketConfig struct {
 }
 
 type CheckerConfig struct {
-	Enabled     bool
-	Batch       int
-	ConnTimeout int
-	CallTimeout int
-	MaxConns    int
-	MaxIdle     int
-	Replicas    int
-	Cluster     map[string]string
-	ClusterList map[string]*ClusterNode
+	Enabled            bool
+	Batch              int
+	ConnTimeout        int
+	CallTimeout        int
+	MaxConcurrentConns int
+	MaxIdle            int
+	Replicas           int
+	Cluster            map[string]string
+	ClusterList        map[string]*ClusterNode
 }
 
 type TsdbConfig struct {
-	Enabled     bool
-	Batch       int
-	ConnTimeout int
-	CallTimeout int
-	MaxConns    int
-	MaxIdle     int
-	MaxRetry    int
-	Address     string
+	Enabled            bool
+	MaxConcurrentConns int
+	Batch              int
+	Address            string
+	UserName           string
+	Password           string
+	Database           string
 }
 
 type GlobalConfig struct {
@@ -53,8 +52,8 @@ type GlobalConfig struct {
 	Http    *HttpConfig
 	Rpc     *RpcConfig
 	Socket  *SocketConfig
-	Checker *CheckerConfig  //!< policyChecker
-	Tsdb    *TsdbConfig     //!< influxdb
+	Checker *CheckerConfig //!< policyChecker
+	Tsdb    *TsdbConfig    //!< influxdb
 }
 
 var (

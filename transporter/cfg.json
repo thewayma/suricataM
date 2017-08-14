@@ -19,7 +19,7 @@
         "Batch": 200,
         "ConnTimeout": 1000,
         "CallTimeout": 5000,
-        "MaxConns": 32,
+        "MaxConcurrentConns": 32,
         "MaxIdle": 32,
         "Replicas": 500,
         "Cluster": {
@@ -27,13 +27,12 @@
         }
     },
     "Tsdb": {
-        "Enabled": false,
+        "Enabled": true,
+        "MaxConcurrentConns": 32,
         "Batch": 200,
-        "ConnTimeout": 1000,
-        "CallTimeout": 5000,
-        "MaxConns": 32,
-        "MaxIdle": 32,
-        "Retry": 3,
-        "Address": "127.0.0.1:8088"
+        "Address": "http://localhost:8086",
+        "UserName": "thewayma",
+        "Password": "thewayma",
+        "Database": "JcloudSec-IDS"
     }
 }

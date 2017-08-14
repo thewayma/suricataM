@@ -1,14 +1,14 @@
 package tx
 
 import (
-	//"fmt"
-	"time"
-	//"bytes"
+	"github.com/influxdata/influxdb/client/v2"
 	. "github.com/thewayma/suricataM/comm/log"
 	. "github.com/thewayma/suricataM/comm/st"
+	"github.com/thewayma/suricataM/comm/utils"
 	"github.com/thewayma/suricataM/transporter/g"
 	"github.com/toolkits/concurrent/semaphore"
 	"github.com/toolkits/container/list"
+	"time"
 )
 
 // send
@@ -21,8 +21,8 @@ func startSendTasks() {
 	cfg := g.Config()
 
 	// init semaphore
-	checkerConcurrent := cfg.Checker.MaxConns
-	tsdbConcurrent := cfg.Tsdb.MaxConns
+	checkerConcurrent := cfg.Checker.MaxConcurrentConns
+	tsdbConcurrent := cfg.Tsdb.MaxConcurrentConns
 
 	if checkerConcurrent < 1 {
 		checkerConcurrent = 1
@@ -37,18 +37,10 @@ func startSendTasks() {
 		queue := CheckerQueues[node]
 		go forward2CheckerTask(queue, node, checkerConcurrent)
 	}
-	/*
-		for node, nitem := range cfg.Graph.ClusterList {
-			for _, addr := range nitem.Addrs {
-				queue := GraphQueues[node+addr]
-				go forward2GraphTask(queue, node, addr, graphConcurrent)
-			}
-		}
 
-		if cfg.Tsdb.Enabled {
-			go forward2TsdbTask(tsdbConcurrent)
-		}
-	*/
+	if cfg.Tsdb.Enabled {
+		go forward2TsdbTask(tsdbConcurrent)
+	}
 }
 
 func forward2CheckerTask(Q *list.SafeListLimited, node string, concurrent int) {
@@ -66,7 +58,7 @@ func forward2CheckerTask(Q *list.SafeListLimited, node string, concurrent int) {
 
 		checkerItems := make([]*CheckerItem, count)
 		for i := 0; i < count; i++ {
-		    checkerItems[i] = items[i].(*CheckerItem)
+			checkerItems[i] = items[i].(*CheckerItem)
 		}
 
 		//	同步Call + 有限并发 进行发送
@@ -97,56 +89,9 @@ func forward2CheckerTask(Q *list.SafeListLimited, node string, concurrent int) {
 	}
 }
 
-/*
-// Graph定时任务, 将 Graph发送缓存中的数据 通过rpc连接池 发送到Graph
-func forward2GraphTask(Q *list.SafeListLimited, node string, addr string, concurrent int) {
-	batch := g.Config().Graph.Batch // 一次发送,最多batch条数据
-	sema := semaphore.NewSemaphore(concurrent)
-
-	for {
-		items := Q.PopBackBy(batch)
-		count := len(items)
-		if count == 0 {
-			time.Sleep(DefaultSendTaskSleepInterval)
-			continue
-		}
-
-		graphItems := make([]*GraphItem, count)
-		for i := 0; i < count; i++ {
-			graphItems[i] = items[i].(*GraphItem)
-		}
-
-		sema.Acquire()
-		go func(addr string, graphItems []*GraphItem, count int) {
-			defer sema.Release()
-
-			resp := &SimpleRpcResponse{}
-			var err error
-			sendOk := false
-			for i := 0; i < 3; i++ { //最多重试3次
-				err = GraphConnPools.Call(addr, "Graph.Send", graphItems, resp)
-				if err == nil {
-					sendOk = true
-					break
-				}
-				time.Sleep(time.Millisecond * 10)
-			}
-
-			// statistics
-			if !sendOk {
-				log.Printf("send to graph %s:%s fail: %v", node, addr, err)
-				proc.SendToGraphFailCnt.IncrBy(int64(count))
-			} else {
-				proc.SendToGraphCnt.IncrBy(int64(count))
-			}
-		}(addr, graphItems, count)
-	}
-}
-
-// Tsdb定时任务, 将数据通过api发送到tsdb
+// Tsdb定时任务, 将数据通过http api发送到influxdb
 func forward2TsdbTask(concurrent int) {
-	batch := g.Config().Tsdb.Batch // 一次发送,最多batch条数据
-	retry := g.Config().Tsdb.MaxRetry
+	batch := g.Config().Tsdb.Batch
 	sema := semaphore.NewSemaphore(concurrent)
 
 	for {
@@ -157,32 +102,52 @@ func forward2TsdbTask(concurrent int) {
 		}
 		//  同步Call + 有限并发 进行发送
 		sema.Acquire()
+
 		go func(itemList []interface{}) {
 			defer sema.Release()
 
-			var tsdbBuffer bytes.Buffer
-			for i := 0; i < len(itemList); i++ {
-				tsdbItem := itemList[i].(*TsdbItem)
-				tsdbBuffer.WriteString(tsdbItem.TsdbString())
-				tsdbBuffer.WriteString("\n")
-			}
-
-			var err error
-			for i := 0; i < retry; i++ {
-				err = TsdbConnPoolHelper.Send(tsdbBuffer.Bytes())
-				if err == nil {
-					proc.SendToTsdbCnt.IncrBy(int64(len(itemList)))
-					break
-				}
-				time.Sleep(100 * time.Millisecond)
-			}
-
+			// Make client
+			c, err := client.NewHTTPClient(client.HTTPConfig{
+				Addr:     g.Config().Tsdb.Address,
+				Username: g.Config().Tsdb.UserName,
+				Password: g.Config().Tsdb.Password,
+			})
 			if err != nil {
-				proc.SendToTsdbFailCnt.IncrBy(int64(len(itemList)))
-				log.Println(err)
-				return
+				Log.Error("Error creating InfluxDB Client: %s", err.Error())
+			}
+			defer c.Close()
+
+			bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
+				Database:  g.Config().Tsdb.Database,
+				Precision: "s",
+			})
+
+			for i := 0; i < len(itemList); i++ {
+				tsdbitem := itemList[i].(*TsdbItem)
+
+				ti, err := utils.String2Time(utils.UnixTsFormat(tsdbitem.Timestamp))
+				if err != nil {
+					ti = time.Now()
+				}
+
+				pt, err := client.NewPoint(
+					tsdbitem.Name,
+					tsdbitem.Tags,
+					tsdbitem.Field,
+					ti,
+				)
+				if err != nil {
+					Log.Error("Formart TsdbItem: %s", err.Error())
+					continue
+				}
+
+				bp.AddPoint(pt)
+			}
+
+			err = c.Write(bp)
+			if err != nil {
+				Log.Error("TsdbItem Write API err: %s", err.Error())
 			}
 		}(items)
 	}
 }
-*/
