@@ -21,7 +21,7 @@ func CheckStrategy(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {
 		return
 	}
 
-    Log.Info(firstItem)
+	Log.Info(firstItem)
 
 	for _, s := range strategies {
 		// 因为key仅仅是endpoint和metric，所以得到的strategies并不一定是与当前CheckerItem相关的

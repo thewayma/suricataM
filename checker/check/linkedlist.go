@@ -46,7 +46,7 @@ func (this *SafeLinkedList) HistoryData(limit int) ([]*st.HistoryData, bool) {
 	var vs []*st.HistoryData
 	isEnough := true
 
-    checkerType := firstItem.Type[0]
+	checkerType := firstItem.Type[0]
 	if checkerType == 'G' || checkerType == 'g' {
 		if size < limit {
 			// 有多少获取多少

@@ -10,7 +10,7 @@ type CheckerItem struct {
 	Metric    string            `json:"metric"`
 	Value     float64           `json:"value"`
 	Timestamp int64             `json:"timestamp"`
-	Type string                 `json:"judgeType"`
+	Type      string            `json:"judgeType"`
 	Tags      map[string]string `json:"tags"`
 }
 

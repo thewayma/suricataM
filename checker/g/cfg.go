@@ -39,11 +39,11 @@ type AlarmConfig struct {
 }
 
 type GlobalConfig struct {
-	Remain    int          `json:"remain"`
-	Http      *HttpConfig  `json:"http"`
-	Rpc       *RpcConfig   `json:"rpc"`
-	Hbs       *HbsConfig   `json:"hbs"`
-	Alarm     *AlarmConfig `json:"alarm"`
+	Remain int          `json:"remain"`
+	Http   *HttpConfig  `json:"http"`
+	Rpc    *RpcConfig   `json:"rpc"`
+	Hbs    *HbsConfig   `json:"hbs"`
+	Alarm  *AlarmConfig `json:"alarm"`
 }
 
 var (
