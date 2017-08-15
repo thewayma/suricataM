@@ -28,7 +28,7 @@ var (
 // node -> queue_of_data
 var (
 	CheckerQueues = make(map[string]*nlist.SafeListLimited)
-	TsdbQueue     *nlist.SafeListLimited
+	InfluxDBQueue *nlist.SafeListLimited
 )
 
 // 连接池
@@ -90,21 +90,21 @@ func Push2CheckerSendQueue(items []*MetricData) {
 }
 
 // 将原始数据入到influxdb发送缓存队列
-func Push2TsdbSendQueue(items []*MetricData) {
+func Push2InfluxDBSendQueue(items []*MetricData) {
 	for _, item := range items {
-		tsdbItem := convert2TsdbItem(item)
-		isSuccess := TsdbQueue.PushFront(tsdbItem)
+		dbItem := convert2InfluxDBItem(item)
+		isSuccess := InfluxDBQueue.PushFront(dbItem)
 
 		if !isSuccess {
-			Log.Error("Push2TsdbSendQueue failure")
-			//proc.SendToTsdbDropCnt.Incr()
+			Log.Error("Push2InfluxDBSendQueue failure")
+			//proc.SendToInfluxDBDropCnt.Incr()
 		}
 	}
 }
 
 // 转化为influxdb格式
-func convert2TsdbItem(d *MetricData) *TsdbItem {
-	t := TsdbItem{Tags: make(map[string]string), Field: make(map[string]interface{})}
+func convert2InfluxDBItem(d *MetricData) *InfluxDBItem {
+	t := InfluxDBItem{Tags: make(map[string]string), Field: make(map[string]interface{})}
 
 	t.Name = strings.Split(d.Metric, ".")[0]
 	for k, v := range d.Tags {

@@ -13,7 +13,7 @@ func initSendQueues() {
 		CheckerQueues[node] = Q
 	}
 
-	if cfg.Tsdb.Enabled {
-		TsdbQueue = nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
+	if cfg.InfluxDB.Enabled {
+		InfluxDBQueue = nlist.NewSafeListLimited(DefaultSendQueueMaxSize)
 	}
 }

@@ -11,7 +11,6 @@ import (
 	"time"
 )
 
-// send
 const (
 	DefaultSendTaskSleepInterval = time.Millisecond * 50 //默认睡眠间隔为50ms
 )
@@ -22,14 +21,14 @@ func startSendTasks() {
 
 	// init semaphore
 	checkerConcurrent := cfg.Checker.MaxConcurrentConns
-	tsdbConcurrent := cfg.Tsdb.MaxConcurrentConns
+	influxdbConcurrent := cfg.InfluxDB.MaxConcurrentConns
 
 	if checkerConcurrent < 1 {
 		checkerConcurrent = 1
 	}
 
-	if tsdbConcurrent < 1 {
-		tsdbConcurrent = 1
+	if influxdbConcurrent < 1 {
+		influxdbConcurrent = 1
 	}
 
 	// init send go-routines
@@ -38,8 +37,8 @@ func startSendTasks() {
 		go forward2CheckerTask(queue, node, checkerConcurrent)
 	}
 
-	if cfg.Tsdb.Enabled {
-		go forward2TsdbTask(tsdbConcurrent)
+	if cfg.InfluxDB.Enabled {
+		go forward2InfluxDBTask(influxdbConcurrent)
 	}
 }
 
@@ -89,13 +88,12 @@ func forward2CheckerTask(Q *list.SafeListLimited, node string, concurrent int) {
 	}
 }
 
-// Tsdb定时任务, 将数据通过http api发送到influxdb
-func forward2TsdbTask(concurrent int) {
-	batch := g.Config().Tsdb.Batch
+func forward2InfluxDBTask(concurrent int) {
+	batch := g.Config().InfluxDB.Batch
 	sema := semaphore.NewSemaphore(concurrent)
 
 	for {
-		items := TsdbQueue.PopBackBy(batch)
+		items := InfluxDBQueue.PopBackBy(batch)
 		if len(items) == 0 {
 			time.Sleep(DefaultSendTaskSleepInterval)
 			continue
@@ -108,9 +106,9 @@ func forward2TsdbTask(concurrent int) {
 
 			// Make client
 			c, err := client.NewHTTPClient(client.HTTPConfig{
-				Addr:     g.Config().Tsdb.Address,
-				Username: g.Config().Tsdb.UserName,
-				Password: g.Config().Tsdb.Password,
+				Addr:     g.Config().InfluxDB.Address,
+				Username: g.Config().InfluxDB.UserName,
+				Password: g.Config().InfluxDB.Password,
 			})
 			if err != nil {
 				Log.Error("Error creating InfluxDB Client: %s", err.Error())
@@ -118,26 +116,26 @@ func forward2TsdbTask(concurrent int) {
 			defer c.Close()
 
 			bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
-				Database:  g.Config().Tsdb.Database,
+				Database:  g.Config().InfluxDB.Database,
 				Precision: "s",
 			})
 
 			for i := 0; i < len(itemList); i++ {
-				tsdbitem := itemList[i].(*TsdbItem)
+				dbitem := itemList[i].(*InfluxDBItem)
 
-				ti, err := utils.String2Time(utils.UnixTsFormat(tsdbitem.Timestamp))
+				ti, err := utils.String2Time(utils.UnixTsFormat(dbitem.Timestamp))
 				if err != nil {
 					ti = time.Now()
 				}
 
 				pt, err := client.NewPoint(
-					tsdbitem.Name,
-					tsdbitem.Tags,
-					tsdbitem.Field,
+					dbitem.Name,
+					dbitem.Tags,
+					dbitem.Field,
 					ti,
 				)
 				if err != nil {
-					Log.Error("Formart TsdbItem: %s", err.Error())
+					Log.Error("Formart InfluxDBItem: %s", err.Error())
 					continue
 				}
 
@@ -146,7 +144,7 @@ func forward2TsdbTask(concurrent int) {
 
 			err = c.Write(bp)
 			if err != nil {
-				Log.Error("TsdbItem Write API err: %s", err.Error())
+				Log.Error("InfluxDBItem Write API err: %s", err.Error())
 			}
 		}(items)
 	}

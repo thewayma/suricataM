@@ -62,8 +62,8 @@ func RecvMetric(items []*MetricData, reply *TransporterResponse, from string) er
 		tx.Push2CheckerSendQueue(items)
 	}
 
-	if cfg.Tsdb.Enabled {
-		tx.Push2TsdbSendQueue(items)
+	if cfg.InfluxDB.Enabled {
+		tx.Push2InfluxDBSendQueue(items)
 	}
 
 	reply.Message = "ok"

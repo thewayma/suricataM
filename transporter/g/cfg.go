@@ -25,7 +25,7 @@ type CheckerConfig struct {
 	ClusterList        map[string]*ClusterNode
 }
 
-type TsdbConfig struct {
+type InfluxDBConfig struct {
 	Enabled            bool
 	MaxConcurrentConns int
 	Batch              int
@@ -36,10 +36,10 @@ type TsdbConfig struct {
 }
 
 type GlobalConfig struct {
-	MinStep int
-	Rpc     *RpcConfig
-	Checker *CheckerConfig //!< policyChecker
-	Tsdb    *TsdbConfig    //!< influxdb
+	MinStep  int
+	Rpc      *RpcConfig
+	Checker  *CheckerConfig  //!< policyChecker
+	InfluxDB *InfluxDBConfig //!< influxdb
 }
 
 var (

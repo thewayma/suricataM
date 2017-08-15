@@ -16,7 +16,7 @@
             "Checker-1" : "127.0.0.1:6080"
         }
     },
-    "Tsdb": {
+    "InfluxDB": {
         "Enabled": true,
         "MaxConcurrentConns": 32,
         "Batch": 200,
