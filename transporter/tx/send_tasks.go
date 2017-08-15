@@ -1,10 +1,8 @@
 package tx
 
 import (
-	"github.com/influxdata/influxdb/client/v2"
 	. "github.com/thewayma/suricataM/comm/log"
 	. "github.com/thewayma/suricataM/comm/st"
-	"github.com/thewayma/suricataM/comm/utils"
 	"github.com/thewayma/suricataM/transporter/g"
 	"github.com/toolkits/concurrent/semaphore"
 	"github.com/toolkits/container/list"
@@ -104,47 +102,24 @@ func forward2InfluxDBTask(concurrent int) {
 		go func(itemList []interface{}) {
 			defer sema.Release()
 
-			// Make client
-			c, err := client.NewHTTPClient(client.HTTPConfig{
-				Addr:     g.Config().InfluxDB.Address,
-				Username: g.Config().InfluxDB.UserName,
-				Password: g.Config().InfluxDB.Password,
-			})
+			var r InfluxDBInstance
+			err := r.InitDB(g.Config().InfluxDB.Address, g.Config().InfluxDB.UserName, g.Config().InfluxDB.Password, g.Config().InfluxDB.Database, "s")
 			if err != nil {
-				Log.Error("Error creating InfluxDB Client: %s", err.Error())
+				Log.Error("Error Creating InfluxDB Client: %s", err.Error())
+				return
 			}
-			defer c.Close()
+			r.DeferClose()
 
-			bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
-				Database:  g.Config().InfluxDB.Database,
-				Precision: "s",
-			})
-
-			for i := 0; i < len(itemList); i++ {
-				dbitem := itemList[i].(*InfluxDBItem)
-
-				ti, err := utils.String2Time(utils.UnixTsFormat(dbitem.Timestamp))
-				if err != nil {
-					ti = time.Now()
-				}
-
-				pt, err := client.NewPoint(
-					dbitem.Name,
-					dbitem.Tags,
-					dbitem.Field,
-					ti,
-				)
-				if err != nil {
-					Log.Error("Formart InfluxDBItem: %s", err.Error())
-					continue
-				}
-
-				bp.AddPoint(pt)
+			err = r.AddPoints(itemList)
+			if err != nil {
+				Log.Error("Error Attach Point to BatchPoints: %s", err.Error())
+				return
 			}
 
-			err = c.Write(bp)
+			err = r.Write()
 			if err != nil {
-				Log.Error("InfluxDBItem Write API err: %s", err.Error())
+				Log.Error("Error Write BatchPoints API: %s", err.Error())
+				return
 			}
 		}(items)
 	}
