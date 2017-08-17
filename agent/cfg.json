@@ -5,7 +5,7 @@
         "Bin": "/tmp/suricata-bin/bin/suricata",
         "Conf": "/tmp/suricata-bin/etc/suricata/suricata.yaml",
         "Ifaces": [
-           "enp0s3",
+           "enp0s3"
         ],
         "RulesDir":     "/tmp/suricata-bin/etc/suricata/rules",
         "UnixSockFile": "/tmp/suricata-bin/var/run/suricata/suricata-command.socket",

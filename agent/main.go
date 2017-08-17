@@ -7,6 +7,8 @@ import (
 	"github.com/thewayma/suricataM/agent/g"
 	"github.com/thewayma/suricataM/agent/http"
 	_ "github.com/thewayma/suricataM/comm/log"
+    "bytes"
+    "fmt"
 )
 
 func main() {
@@ -24,6 +26,20 @@ func main() {
 	cron.SyncSuricata()
 
 	go http.Start()
+
+
+
+    var comm bytes.Buffer
+    comm.WriteString(g.Config().Suricata.Bin)
+    comm.WriteString(" -c ")
+    comm.WriteString(g.Config().Suricata.Conf)
+
+    for _, v := range g.Config().Suricata.Ifaces {
+        comm.WriteString(" -i ")
+        comm.WriteString(v)
+    }
+	fmt.Println(comm.String())
+
 
 	select {}
 }
