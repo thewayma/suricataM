@@ -2,6 +2,11 @@
     "Hostname": "JIDS_Agent",
     "Ip": "10.12.209.156",
     "Suricata": {
+        "Bin": "/tmp/suricata-bin/bin/suricata",
+        "Conf": "/tmp/suricata-bin/etc/suricata/suricata.yaml",
+        "Ifaces": [
+           "enp0s3",
+        ],
         "RulesDir":     "/tmp/suricata-bin/etc/suricata/rules",
         "UnixSockFile": "/tmp/suricata-bin/var/run/suricata/suricata-command.socket",
         "Interval": 60

@@ -20,6 +20,9 @@ var (
 )
 
 type SuricataConfig struct {
+	Bin          string
+	Conf         string
+	Ifaces       []string
 	RulesDir     string
 	UnixSockFile string
 	Interval     int

@@ -21,6 +21,8 @@ func SyncSuricata() {
 }
 
 func syncControlCommand() {
+	Log.Trace("Agent Starts syncControlCommand, Interval=%d", g.Config().Suricata.Interval)
+
 	// TODO: 现用g.Config().Suricata.Interval统一命令控制, 策略规则的更新间隔, 将来可以在配置文件中分开处理
 	duration := time.Duration(g.Config().Suricata.Interval) * time.Second
 
@@ -34,7 +36,7 @@ func syncControlCommand() {
 		var resp st.AgentControlCommandResponse
 		err := g.HbsClient.Call("Agent.FetchOpt", req, &resp)
 		if err != nil {
-			Log.Error("Agent <= Heartbeat Pull Policy %s", err)
+			Log.Error("Agent <= Heartbeat, Pull Policy %s", err)
 			continue
 		}
 
@@ -44,21 +46,21 @@ func syncControlCommand() {
 
 		case "engine-shutdown":
 			Log.Trace("Agent <= Heartbeat, Shutdown Suricata")
-			funcs.ShutDown()
+			Log.Trace("ShutDown: %s", funcs.ShutDown())
 
 		case "engine-restart":
 			Log.Trace("Agent <= Heartbeat, Restart Suricata")
-			funcs.ShutDown()
+			Log.Trace("ShutDown: %s", funcs.ShutDown())
 
 		case "reload-rules":
 			Log.Trace("Agent <= Heartbeat, Reload Suricata Rules")
-			funcs.ReloadRules()
+			Log.Trace("Reload Rules: %s", funcs.ReloadRules())
 
 		case "rules-update":
 			Log.Trace("Agent <= Heartbeat, Update Suricata Rules")
 
 		default:
-			Log.Trace("Agent <= Heartbeat, Nothing to do right now")
+			Log.Trace("Agent <= Heartbeat, Nothing to do right now!!!")
 		}
 	}
 }
