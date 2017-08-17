@@ -21,6 +21,7 @@ func main() {
 	cron.PreCollect()
 	cron.Collect()
 	cron.ReportAgentStatus()
+	cron.SyncSuricata()
 
 	go http.Start()
 

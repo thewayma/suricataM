@@ -32,10 +32,10 @@ func init() {
 }
 
 func suriConnect() net.Conn {
-	conn, err := net.Dial("unix", g.Config().UnixSockFile)
+	conn, err := net.Dial("unix", g.Config().Suricata.UnixSockFile)
 	//g.checkError(err)
 	if err != nil {
-		fmt.Printf("Unix File %s not found\n", g.Config().UnixSockFile)
+		fmt.Printf("Unix File %s not found\n", g.Config().Suricata.UnixSockFile)
 		os.Exit(-1)
 	}
 

@@ -19,6 +19,12 @@ var (
 	lock       = new(sync.RWMutex)
 )
 
+type SuricataConfig struct {
+	RulesDir     string
+	UnixSockFile string
+	Interval     int
+}
+
 type HeartbeatConfig struct {
 	Enabled  bool
 	Addr     string
@@ -39,13 +45,13 @@ type HttpConfig struct {
 }
 
 type GlobalConfig struct {
-	Hostname     string
-	Ip           string
-	UnixSockFile string
-	Heartbeat    *HeartbeatConfig
-	Transfer     *TransferConfig
-	Http         *HttpConfig
-	DefaultTags  map[string]string
+	Hostname    string
+	Ip          string
+	Suricata    *SuricataConfig
+	Heartbeat   *HeartbeatConfig
+	Transfer    *TransferConfig
+	Http        *HttpConfig
+	DefaultTags map[string]string
 }
 
 func InitLocalIp() {
