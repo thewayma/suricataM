@@ -1,7 +1,11 @@
 {
     "Agent": {
         "Hostname": "JIDS_Agent",
-        "Ip": "10.12.209.156"
+        "Ip": "10.12.209.156",
+        "Http": {
+            "Enabled": true,
+            "Listen": ":80"
+        }
     },
     "Suricata": {
         "Bin": "/tmp/suricata-bin/bin/suricata",
@@ -26,10 +30,6 @@
         ],
         "Interval": 1,
         "Timeout": 1000
-    },
-    "Http": {
-        "Enabled": true,
-        "Listen": ":80"
     },
     "DefaultTags" : {
         "Region":       "Beijing",

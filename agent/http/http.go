@@ -13,11 +13,11 @@ func init() {
 }
 
 func Start() {
-	if !g.Config().Http.Enabled {
+	if !g.Config().Agent.Http.Enabled {
 		return
 	}
 
-	addr := g.Config().Http.Listen
+	addr := g.Config().Agent.Http.Listen
 	if addr == "" {
 		return
 	}

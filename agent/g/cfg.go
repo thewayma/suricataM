@@ -50,6 +50,7 @@ type HttpConfig struct {
 type AgentConfig struct {
 	Hostname string
 	Ip       string
+	Http     *HttpConfig
 }
 
 type GlobalConfig struct {
@@ -57,7 +58,6 @@ type GlobalConfig struct {
 	Suricata    *SuricataConfig
 	Heartbeat   *HeartbeatConfig
 	Transporter *TransporterConfig
-	Http        *HttpConfig
 	DefaultTags map[string]string
 }
 
