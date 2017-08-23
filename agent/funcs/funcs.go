@@ -13,7 +13,7 @@ type FuncsAndInterval struct {
 var CollectorFuncs []FuncsAndInterval
 
 func GenerateCollectorFuncs() {
-	interval := g.Config().Transfer.Interval
+	interval := g.Config().Transporter.Interval
 	CollectorFuncs = []FuncsAndInterval{
 		{
 			Fs: []func() []*MetricData{

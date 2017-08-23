@@ -13,11 +13,11 @@ var (
 	Clients                   = make(map[string]*RpcClient)
 )
 
-func initTransferClient(addr string) *RpcClient {
+func initTransporterClient(addr string) *RpcClient {
 	var c *RpcClient = &RpcClient{
 		Peer:      "Agent => Transporter",
 		RpcServer: addr,
-		Timeout:   time.Duration(Config().Transfer.Timeout) * time.Millisecond,
+		Timeout:   time.Duration(Config().Transporter.Timeout) * time.Millisecond,
 	}
 	ClientsLock.Lock()
 	defer ClientsLock.Unlock()
@@ -26,7 +26,7 @@ func initTransferClient(addr string) *RpcClient {
 	return c
 }
 
-func getTransferClient(addr string) *RpcClient {
+func getTransporterClient(addr string) *RpcClient {
 	ClientsLock.RLock()
 	defer ClientsLock.RUnlock()
 
@@ -37,9 +37,9 @@ func getTransferClient(addr string) *RpcClient {
 }
 
 func updateMetrics(c *RpcClient, metrics []*MetricData, resp *TransporterResponse) bool {
-	err := c.Call("Transfer.Update", metrics, resp)
+	err := c.Call("Transporter.Update", metrics, resp)
 	if err != nil {
-		Log.Error("Agent => Transporter Transfer.Update RPC fail, Rpc Client:%v, Error Code:%s", c, err)
+		Log.Error("Agent => Transporter Transporter.Update RPC fail, Rpc Client:%v, Error Code:%s", c, err)
 		return false
 	}
 	return true
@@ -47,12 +47,12 @@ func updateMetrics(c *RpcClient, metrics []*MetricData, resp *TransporterRespons
 
 func SendMetrics(metrics []*MetricData, resp *TransporterResponse) {
 	rand.Seed(time.Now().UnixNano())
-	for _, i := range rand.Perm(len(Config().Transfer.Addrs)) {
-		addr := Config().Transfer.Addrs[i]
+	for _, i := range rand.Perm(len(Config().Transporter.Addrs)) {
+		addr := Config().Transporter.Addrs[i]
 
-		c := getTransferClient(addr)
+		c := getTransporterClient(addr)
 		if c == nil {
-			c = initTransferClient(addr)
+			c = initTransporterClient(addr)
 		}
 
 		if updateMetrics(c, metrics, resp) {

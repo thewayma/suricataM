@@ -18,11 +18,11 @@ func PreCollect() {
 }
 
 func Collect() {
-	if !g.Config().Transfer.Enabled {
+	if !g.Config().Transporter.Enabled {
 		return
 	}
 
-	if len(g.Config().Transfer.Addrs) == 0 {
+	if len(g.Config().Transporter.Addrs) == 0 {
 		return
 	}
 

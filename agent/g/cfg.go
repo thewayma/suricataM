@@ -35,7 +35,7 @@ type HeartbeatConfig struct {
 	Timeout  int
 }
 
-type TransferConfig struct {
+type TransporterConfig struct {
 	Enabled  bool
 	Addrs    []string
 	Interval int //!< 监控项采集周期
@@ -52,14 +52,14 @@ type GlobalConfig struct {
 	Ip          string
 	Suricata    *SuricataConfig
 	Heartbeat   *HeartbeatConfig
-	Transfer    *TransferConfig
+	Transporter *TransporterConfig
 	Http        *HttpConfig
 	DefaultTags map[string]string
 }
 
 func InitLocalIp() {
-	if Config().Transfer.Enabled {
-		conn, err := net.DialTimeout("tcp", Config().Transfer.Addrs[0], time.Second*10)
+	if Config().Transporter.Enabled {
+		conn, err := net.DialTimeout("tcp", Config().Transporter.Addrs[0], time.Second*10)
 		if err != nil {
 			log.Println("get local addr failed !")
 		} else {

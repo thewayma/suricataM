@@ -17,7 +17,7 @@
 		"Interval": 1,
 		"Timeout": 1000
 	},
-	"Transfer": {
+	"Transporter": {
 		"Enabled": true,
 		"Addrs": [
             "127.0.0.1:8433"
