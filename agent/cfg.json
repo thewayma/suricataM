@@ -19,7 +19,8 @@
     },
 	"Heartbeat": {
 		"Enabled": true,
-		"Addr": "127.0.0.1:6030",
+		"RpcAddr": "127.0.0.1:6030",
+		"HttpAddr": "127.0.0.1:6030",
 		"Interval": 1,
 		"Timeout": 1000
 	},

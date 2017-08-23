@@ -11,7 +11,7 @@ func InitRpcClients() {
 	if Config().Heartbeat.Enabled {
 		HbsClient = &RpcClient{
 			Peer:      "Agent => Heartbeat",
-			RpcServer: Config().Heartbeat.Addr,
+			RpcServer: Config().Heartbeat.RpcAddr,
 			Timeout:   time.Duration(Config().Heartbeat.Timeout) * time.Millisecond,
 		}
 	}

@@ -30,7 +30,8 @@ type SuricataConfig struct {
 
 type HeartbeatConfig struct {
 	Enabled  bool
-	Addr     string
+	RpcAddr  string
+	HttpAddr string
 	Interval int
 	Timeout  int
 }
@@ -132,8 +133,9 @@ func ParseConfig(cfg string) {
 
 	lock.Lock()
 	defer lock.Unlock()
-
 	config = &c
 
-	log.Println("read config file:", cfg, "successfully")
+	InitLocalIp()
+
+	log.Println("read config file:", cfg, "successfully", "LocalIp=", LocalIp)
 }

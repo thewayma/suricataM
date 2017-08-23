@@ -28,7 +28,7 @@ func (this *AgentReportRequest) String() string {
 }
 
 func ReportAgentStatus() {
-	if g.Config().Heartbeat.Enabled && g.Config().Heartbeat.Addr != "" {
+	if g.Config().Heartbeat.Enabled && g.Config().Heartbeat.RpcAddr != "" {
 		go reportAgentStatus(time.Duration(g.Config().Heartbeat.Interval) * time.Second)
 	}
 }
