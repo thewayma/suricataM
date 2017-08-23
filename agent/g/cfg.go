@@ -47,9 +47,13 @@ type HttpConfig struct {
 	Listen  string
 }
 
+type AgentConfig struct {
+	Hostname string
+	Ip       string
+}
+
 type GlobalConfig struct {
-	Hostname    string
-	Ip          string
+	Agent       *AgentConfig
 	Suricata    *SuricataConfig
 	Heartbeat   *HeartbeatConfig
 	Transporter *TransporterConfig
@@ -78,7 +82,7 @@ func Config() *GlobalConfig {
 }
 
 func Hostname() (string, error) {
-	hostname := Config().Hostname
+	hostname := Config().Agent.Hostname
 	if hostname != "" {
 		return hostname, nil
 	}
@@ -91,7 +95,7 @@ func Hostname() (string, error) {
 }
 
 func IP() string {
-	ip := Config().Ip
+	ip := Config().Agent.Ip
 	if ip != "" {
 		// use ip in configuration
 		return ip

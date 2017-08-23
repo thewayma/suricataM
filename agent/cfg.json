@@ -1,6 +1,8 @@
 {
-    "Hostname": "JIDS_Agent",
-    "Ip": "10.12.209.156",
+    "Agent": {
+        "Hostname": "JIDS_Agent",
+        "Ip": "10.12.209.156"
+    },
     "Suricata": {
         "Bin": "/tmp/suricata-bin/bin/suricata",
         "Conf": "/tmp/suricata-bin/etc/suricata/suricata.yaml",
