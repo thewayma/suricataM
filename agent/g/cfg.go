@@ -132,8 +132,8 @@ func ParseConfig(cfg string) {
 	}
 
 	lock.Lock()
-	defer lock.Unlock()
 	config = &c
+	lock.Unlock()
 
 	InitLocalIp()
 
