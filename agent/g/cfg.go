@@ -137,5 +137,5 @@ func ParseConfig(cfg string) {
 
 	InitLocalIp()
 
-	log.Println("read config file:", cfg, "successfully", "LocalIp=", LocalIp)
+	log.Println("read config file:", cfg, "successfully", "LocalIp=", IP())
 }
