@@ -45,11 +45,26 @@ func scStartString() string {
 	return str
 }
 
+func replaceRuleFile() error {
+	rulefile_bak := g.Config().Suricata.RulesDir + "/jcloud_suricata.rule.bak"
+	rulefile_org := g.Config().Suricata.RulesDir + "/jcloud_suricata.rule"
+	str := "mv " + rulefile_bak + " " + rulefile_org
+
+	_, err := exec.Command("/bin/sh", "-c", str).Output()
+	if err != nil {
+		Log.Error("Agent <= Heartbeat, mv %s %s, err=%s", rulefile_bak, rulefile_org, err.Error())
+		return err
+	}
+
+	Log.Trace("Agent <= Heartbeat, mv %s %s, Success", rulefile_bak, rulefile_org)
+	return nil
+}
+
 func downloadSCRuleFile() error {
 	rulefile := g.Config().Suricata.RulesDir + "/jcloud_suricata.rule.bak"
 	f, err := os.OpenFile(rulefile, os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
-		Log.Trace("Agent <= Heartbeat, Fail to New File %s,  err=%s", rulefile, err.Error())
+		Log.Error("Agent <= Heartbeat, Fail to New File %s,  err=%s", rulefile, err.Error())
 		return err
 	}
 
@@ -133,6 +148,9 @@ func syncControlCommand() {
 
 		case "rules-update":
 			Log.Trace("Agent <= Heartbeat, Update Suricata Rules")
+			downloadSCRuleFile()
+			replaceRuleFile()
+			Log.Trace("Agent <= Heartbeat, Reload Suricata Rules: %s", funcs.ReloadRules())
 
 		default:
 			Log.Trace("Agent <= Heartbeat, nothing to do right now!!!")

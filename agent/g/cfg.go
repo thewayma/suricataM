@@ -66,7 +66,7 @@ func InitLocalIp() {
 	if Config().Transporter.Enabled {
 		conn, err := net.DialTimeout("tcp", Config().Transporter.Addrs[0], time.Second*10)
 		if err != nil {
-            log.Println("get local addr failed, err:", err.Error())
+			log.Println("get local addr failed, err:", err.Error())
 		} else {
 			LocalIp = strings.Split(conn.LocalAddr().String(), ":")[0]
 			conn.Close()
