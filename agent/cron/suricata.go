@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"reflect"
 	"time"
 )
 
@@ -23,6 +24,64 @@ func SyncSuricata() {
 	}
 
 	go syncControlCommand()
+	go syncMonitorMetric()
+}
+
+func ParseStructByReflect(u interface{}) {
+	t := reflect.TypeOf(u)
+	v := reflect.ValueOf(u)
+
+	for i := 0; i < v.NumField(); i++ {
+		if v.Field(i).CanInterface() {
+			Log.Trace("field=%s, type=%s, value=%v, tag=%s\n", t.Field(i).Name, v.Field(i).Type().Kind(), v.Field(i).Interface(), t.Field(i).Tag)
+
+			if v.Field(i).Type().Kind() == reflect.Struct {
+				sft := v.Field(i).Type()
+				sfv := v.Field(i)
+				for j := 0; j < sfv.NumField(); j++ {
+					Log.Trace("    structfield=%s, type=%s, value=%v, tag=%s\n",
+						sft.Field(j).Name, sfv.Field(j).Type().Kind(), sfv.Field(j).Interface(), sft.Field(j).Tag)
+
+					key, ok := st.MetricMapper[sft.Field(j).Name]
+					if !ok {
+						continue
+					}
+					val := false
+					if sfv.Field(j).Interface() == "off" {
+						val = true
+					}
+
+					st.IgnoreMetric.Lock()
+					st.IgnoreMetric.Item[key] = val
+					st.IgnoreMetric.Unlock()
+				}
+			}
+		}
+	}
+}
+
+func syncMonitorMetric() {
+	interval := g.Config().Suricata.MonitorMetricPollInterval
+	Log.Trace("Agent Starts syncMonitorMetric, MonitorMetricPollInterval=%d", interval)
+	duration := time.Duration(interval) * time.Second
+
+	for {
+		time.Sleep(duration)
+
+		req := st.AgentMetricCommandRequest{
+			IP: g.IP(),
+		}
+
+		var resp st.AgentMetricCommandResponse
+		err := g.HbsClient.Call("Agent.FetchMonitorConfig", req, &resp)
+		if err != nil {
+			Log.Error("Agent <= Heartbeat, Pull Policy %s", err.Error())
+			continue
+		}
+
+		ParseStructByReflect(resp)
+	}
+
 }
 
 func scStartString() string {
@@ -30,13 +89,15 @@ func scStartString() string {
 
 	comm.WriteString("nohup ")
 	comm.WriteString(g.Config().Suricata.Bin)
+	comm.WriteString(" --dpdkintel ")
 	comm.WriteString(" -c ")
 	comm.WriteString(g.Config().Suricata.Conf)
-
-	for _, v := range g.Config().Suricata.Ifaces {
-		comm.WriteString(" -i ")
-		comm.WriteString(v)
-	}
+	/*
+	   for _, v := range g.Config().Suricata.Ifaces {
+	       comm.WriteString(" -i ")
+	       comm.WriteString(v)
+	   }
+	*/
 	comm.WriteString(" &> /dev/null &")
 
 	str := comm.String()
@@ -101,10 +162,9 @@ func downloadSCRuleFile() error {
 }
 
 func syncControlCommand() {
-	Log.Trace("Agent Starts syncControlCommand, Interval=%d", g.Config().Suricata.Interval)
-
-	// TODO: 现用g.Config().Suricata.Interval统一命令控制, 策略规则的更新间隔, 将来可以在配置文件中分开处理
-	duration := time.Duration(g.Config().Suricata.Interval) * time.Second
+	interval := g.Config().Suricata.ControlCommandPollInterval
+	Log.Trace("Agent Starts syncControlCommand, ControlCommandPollInterval=%d", interval)
+	duration := time.Duration(interval) * time.Second
 
 	for {
 		time.Sleep(duration)

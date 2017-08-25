@@ -50,7 +50,15 @@ func collect(sec int64, fns []func() []*MetricData) {
 			}
 
 			for _, mv := range items {
-				metrics = append(metrics, mv)
+				IgnoreMetric.RLock()
+				k, exist := IgnoreMetric.Item[mv.Metric]
+				IgnoreMetric.RUnlock()
+
+				if exist && k {
+					continue
+				} else {
+					metrics = append(metrics, mv)
+				}
 			}
 		}
 

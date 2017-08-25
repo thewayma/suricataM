@@ -15,7 +15,8 @@
         ],
         "RulesDir":     "/tmp/suricata-bin/etc/suricata/rules",
         "UnixSockFile": "/tmp/suricata-bin/var/run/suricata/suricata-command.socket",
-        "Interval": 60
+        "ControlCommandPollInterval": 60,
+        "MonitorMetricPollInterval": 60
     },
 	"Heartbeat": {
 		"Enabled": true,

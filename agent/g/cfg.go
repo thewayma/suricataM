@@ -20,12 +20,13 @@ var (
 )
 
 type SuricataConfig struct {
-	Bin          string
-	Conf         string
-	Ifaces       []string
-	RulesDir     string
-	UnixSockFile string
-	Interval     int
+	Bin                        string
+	Conf                       string
+	Ifaces                     []string
+	RulesDir                   string
+	UnixSockFile               string
+	ControlCommandPollInterval int
+	MonitorMetricPollInterval  int
 }
 
 type HeartbeatConfig struct {
