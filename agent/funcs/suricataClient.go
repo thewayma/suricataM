@@ -6,7 +6,6 @@ import (
 	"github.com/thewayma/suricataM/agent/g"
 	"github.com/thewayma/suricataM/comm/log"
 	"net"
-	"os"
 )
 
 type ifStat struct {
@@ -32,10 +31,10 @@ func init() {
 	ifaceMap = make(map[int]string)
 }
 
-func suriConnect() (net.Conn, err) {
+func suriConnect() (net.Conn, error) {
 	conn, err := net.Dial("unix", g.Config().Suricata.UnixSockFile)
 	if err != nil {
-		log.Log.CRITICAL("Unix File %s not found", g.Config().Suricata.UnixSockFile)
+		log.Log.Critical("Unix File %s not found", g.Config().Suricata.UnixSockFile)
 		return nil, err
 	}
 
