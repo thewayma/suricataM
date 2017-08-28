@@ -1,13 +1,17 @@
 {
     "MaxLinklistNum": 11,
-    "Rpc": {
-        "Enabled": true,
-        "Listen": "0.0.0.0:6080"
+    "Checker": {
+        "Ip": "10.12.209.156",
+        "Hostname": "JNIDS_Checker",
+        "Rpc": {
+            "Enabled": true,
+            "Listen": "0.0.0.0:6080"
+        }
     },
     "Hbs": {
         "Server":  "127.0.0.1:6030",
         "Timeout": 300,
-        "Interval": 60
+        "PolicyPollInterval": 60
     },
     "Alarm": {
         "Enabled": true,

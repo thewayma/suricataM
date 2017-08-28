@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/toolkits/file"
 	"log"
+	"os"
 	"sync"
 )
 
@@ -12,10 +13,16 @@ type RpcConfig struct {
 	Listen  string
 }
 
+type CheckerConfig struct {
+	Ip       string
+	Hostname string
+	Rpc      *RpcConfig
+}
+
 type HbsConfig struct {
-	Server   string
-	Timeout  int64
-	Interval int64
+	Server             string
+	Timeout            int64
+	PolicyPollInterval int64
 }
 
 type RedisConfig struct {
@@ -35,7 +42,7 @@ type AlarmConfig struct {
 
 type GlobalConfig struct {
 	MaxLinklistNum int
-	Rpc            *RpcConfig
+	Checker        *CheckerConfig
 	Hbs            *HbsConfig
 	Alarm          *AlarmConfig
 }
@@ -50,6 +57,24 @@ func Config() *GlobalConfig {
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return config
+}
+
+func Hostname() string {
+	hostname := Config().Checker.Hostname
+	if hostname != "" {
+		return hostname
+	}
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Println("ERROR: os.Hostname() fail", err)
+		return "all-default-hostname"
+	}
+	return hostname
+}
+
+func IP() string {
+	return Config().Checker.Ip
 }
 
 func ParseConfig(cfg string) {

@@ -10,7 +10,6 @@ import (
 
 func Checker(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {
 	CheckStrategy(L, firstItem, now)
-	//CheckExpression(L, firstItem, now)    //!< 暂时不需要expression机制
 }
 
 func CheckStrategy(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {

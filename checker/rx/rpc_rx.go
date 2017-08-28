@@ -27,10 +27,10 @@ func (this *Checker) Send(items []*st.CheckerItem, resp *st.SimpleRpcResponse) e
 }
 
 func RpcStart() {
-	if !g.Config().Rpc.Enabled {
+	if !g.Config().Checker.Rpc.Enabled {
 		return
 	}
-	addr := g.Config().Rpc.Listen
+	addr := g.Config().Checker.Rpc.Listen
 	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		log.Fatalf("net.ResolveTCPAddr fail: %s", err)

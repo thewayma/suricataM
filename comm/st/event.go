@@ -38,18 +38,6 @@ func (this *Event) StrategyId() int {
 	return this.Strategy.Id
 }
 
-func (this *Event) TplId() int {
-	return this.Strategy.Tpl.Id
-}
-
-func (this *Event) Tpl() *Template {
-	return this.Strategy.Tpl
-}
-
-func (this *Event) ActionId() int {
-	return this.Strategy.Tpl.ActionId
-}
-
 func (this *Event) Priority() int {
 	return this.Strategy.Priority
 }

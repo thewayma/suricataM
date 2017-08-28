@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
+	"github.com/thewayma/suricataM/checker/cron"
 	"github.com/thewayma/suricataM/checker/g"
 	"github.com/thewayma/suricataM/checker/rx"
 	_ "github.com/thewayma/suricataM/comm/log"
-	//_"github.com/thewayma/suricataM/checker/check"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 	g.InitHbsClient()
 
 	go rx.RpcStart()
-	//go cron.SyncStrategies()
+	go cron.SyncSuricataPolicy()
 	//go cron.CleanStale()
 
 	select {}
