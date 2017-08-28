@@ -1,6 +1,6 @@
 {
     "Agent": {
-        "Hostname": "JIDS_Agent",
+        "Hostname": "JNIDS_Agent",
         "Ip": "10.12.209.156",
         "Http": {
             "Enabled": true,

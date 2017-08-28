@@ -11,18 +11,20 @@ import (
 )
 
 type AgentReportRequest struct {
-	Hostname     string
-	IP           string
-	AgentVersion string //!< ids engine version
-	Uptime       int64  //!< ids engine uptime
+	Hostname        string
+	IP              string
+	AgentVersion    string
+	SuricataVersion string
+	Uptime          int64
 }
 
 func (this *AgentReportRequest) String() string {
 	return fmt.Sprintf(
-		"<Hostname:%s, IP:%s, engineVersion:%s, engineUptime:%s>",
+		"<Hostname:%s, IP:%s, agentVersion:%s, engineVersion:%s, engineUptime:%s>",
 		this.Hostname,
 		this.IP,
 		this.AgentVersion,
+		this.SuricataVersion,
 		this.Uptime,
 	)
 }
@@ -36,10 +38,11 @@ func ReportAgentStatus() {
 func reportAgentStatus(interval time.Duration) {
 	for {
 		req := AgentReportRequest{
-			Hostname:     g.Hostname(),
-			IP:           g.IP(),
-			AgentVersion: g.VERSION,
-			Uptime:       funcs.GetUptime(),
+			Hostname:        g.Hostname(),
+			IP:              g.IP(),
+			AgentVersion:    g.VERSION,
+			Uptime:          funcs.GetUptime(),
+			SuricataVersion: funcs.GetVersion(),
 		}
 
 		var resp SimpleRpcResponse

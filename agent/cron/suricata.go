@@ -171,7 +171,8 @@ func syncControlCommand() {
 		time.Sleep(duration)
 
 		req := st.AgentControlCommandRequest{
-			IP: g.IP(),
+			IP:       g.IP(),
+			Hostname: g.Hostname(),
 		}
 
 		var resp st.AgentControlCommandResponse
