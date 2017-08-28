@@ -5,7 +5,8 @@ import (
 )
 
 type AgentControlCommandRequest struct {
-	IP string
+	IP       string
+	Hostname string
 }
 
 type AgentControlCommandResponse struct {
