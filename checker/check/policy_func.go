@@ -2,10 +2,9 @@ package check
 
 import (
 	"fmt"
+	"github.com/thewayma/suricataM/comm/log"
 	"github.com/thewayma/suricataM/comm/st"
 	"math"
-	"strconv"
-	"strings"
 )
 
 type Function interface {
@@ -87,35 +86,6 @@ func (this AllFunction) Compute(L *SafeLinkedList) (vs []*st.HistoryData, leftVa
 	return
 }
 
-type LookupFunction struct {
-	Function
-	Num        int
-	Limit      int
-	Operator   string
-	RightValue float64
-}
-
-func (this LookupFunction) Compute(L *SafeLinkedList) (vs []*st.HistoryData, leftValue float64, isTriggered bool, isEnough bool) {
-	vs, isEnough = L.HistoryData(this.Limit)
-	if !isEnough {
-		return
-	}
-
-	leftValue = vs[0].Value
-
-	for n, i := 0, 0; i < this.Limit; i++ {
-		if checkIsTriggered(vs[i].Value, this.Operator, this.RightValue) {
-			n++
-			if n == this.Num {
-				isTriggered = true
-				return
-			}
-		}
-	}
-
-	return
-}
-
 type SumFunction struct {
 	Function
 	Limit      int
@@ -162,116 +132,23 @@ func (this AvgFunction) Compute(L *SafeLinkedList) (vs []*st.HistoryData, leftVa
 	return
 }
 
-type DiffFunction struct {
-	Function
-	Limit      int
-	Operator   string
-	RightValue float64
-}
-
-// 只要有一个点的diff触发阈值，就报警
-func (this DiffFunction) Compute(L *SafeLinkedList) (vs []*st.HistoryData, leftValue float64, isTriggered bool, isEnough bool) {
-	// 此处this.Limit要+1，因为通常说diff(#3)，是当前点与历史的3个点相比较
-	// 然而最新点已经在linkedlist的第一个位置，所以……
-	vs, isEnough = L.HistoryData(this.Limit + 1)
-	if !isEnough {
-		return
+func ParseFuncFromString(cycle int, funcs string, operator string, rightValue float64) (fn Function, err error) {
+	if cycle < 0 || cycle > 20 {
+		log.Log.Error("PolicyChecker, Invalid Cycle=%d", cycle)
+		cycle = 3
 	}
 
-	if len(vs) == 0 {
-		isEnough = false
-		return
-	}
-
-	first := vs[0].Value
-
-	isTriggered = false
-	for i := 1; i < this.Limit+1; i++ {
-		// diff是当前值减去历史值
-		leftValue = first - vs[i].Value
-		isTriggered = checkIsTriggered(leftValue, this.Operator, this.RightValue)
-		if isTriggered {
-			break
-		}
-	}
-
-	return
-}
-
-// pdiff(#3)
-type PDiffFunction struct {
-	Function
-	Limit      int
-	Operator   string
-	RightValue float64
-}
-
-func (this PDiffFunction) Compute(L *SafeLinkedList) (vs []*st.HistoryData, leftValue float64, isTriggered bool, isEnough bool) {
-	vs, isEnough = L.HistoryData(this.Limit + 1)
-	if !isEnough {
-		return
-	}
-
-	if len(vs) == 0 {
-		isEnough = false
-		return
-	}
-
-	first := vs[0].Value
-
-	isTriggered = false
-	for i := 1; i < this.Limit+1; i++ {
-		if vs[i].Value == 0 {
-			continue
-		}
-
-		leftValue = (first - vs[i].Value) / vs[i].Value * 100.0
-		isTriggered = checkIsTriggered(leftValue, this.Operator, this.RightValue)
-		if isTriggered {
-			break
-		}
-	}
-
-	return
-}
-
-func atois(s string) (ret []int, err error) {
-	a := strings.Split(s, ",")
-	ret = make([]int, len(a))
-	for i, v := range a {
-		ret[i], err = strconv.Atoi(v)
-		if err != nil {
-			return
-		}
-	}
-	return
-}
-
-// @str: e.g. all(#3) sum(#3) avg(#10) diff(#10)
-func ParseFuncFromString(str string, operator string, rightValue float64) (fn Function, err error) {
-	idx := strings.Index(str, "#")
-	args, err := atois(str[idx+1 : len(str)-1])
-	if err != nil {
-		return nil, err
-	}
-
-	switch str[:idx-1] {
+	switch funcs {
 	case "max":
-		fn = &MaxFunction{Limit: args[0], Operator: operator, RightValue: rightValue}
+		fn = &MaxFunction{Limit: cycle, Operator: operator, RightValue: rightValue}
 	case "min":
-		fn = &MinFunction{Limit: args[0], Operator: operator, RightValue: rightValue}
+		fn = &MinFunction{Limit: cycle, Operator: operator, RightValue: rightValue}
 	case "all":
-		fn = &AllFunction{Limit: args[0], Operator: operator, RightValue: rightValue}
+		fn = &AllFunction{Limit: cycle, Operator: operator, RightValue: rightValue}
 	case "sum":
-		fn = &SumFunction{Limit: args[0], Operator: operator, RightValue: rightValue}
+		fn = &SumFunction{Limit: cycle, Operator: operator, RightValue: rightValue}
 	case "avg":
-		fn = &AvgFunction{Limit: args[0], Operator: operator, RightValue: rightValue}
-	case "diff":
-		fn = &DiffFunction{Limit: args[0], Operator: operator, RightValue: rightValue}
-	case "pdiff":
-		fn = &PDiffFunction{Limit: args[0], Operator: operator, RightValue: rightValue}
-	case "lookup":
-		fn = &LookupFunction{Num: args[0], Limit: args[1], Operator: operator, RightValue: rightValue}
+		fn = &AvgFunction{Limit: cycle, Operator: operator, RightValue: rightValue}
 	default:
 		err = fmt.Errorf("not_supported_method")
 	}

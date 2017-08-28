@@ -26,7 +26,7 @@ func CheckStrategy(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {
 }
 
 func checkItemWithStrategy(L *SafeLinkedList, strategy st.Strategy, firstItem *st.CheckerItem, now int64) {
-	fn, err := ParseFuncFromString(strategy.Func, strategy.Operator, strategy.RightValue)
+	fn, err := ParseFuncFromString(strategy.Cycle, strategy.Func, strategy.Operator, strategy.RightValue)
 	if err != nil {
 		Log.Error("[ERROR] parse func %s fail: %v. strategy id: %d", strategy.Func, err, strategy.Id)
 		return

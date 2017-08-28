@@ -40,10 +40,10 @@ type StrategiesRequest struct {
 
 type Strategy struct {
 	Id          int     `json:"id"`
-	Cycle       int     `json:"cycle"`
+	Cycle       int     `json:"cycle"` // e.g. 3
 	Metric      string  `json:"item"`
-	Func        string  `json:"calc"`   // e.g. max(#3) all(#3)
-	Operator    string  `json:"opt"`    // e.g. < !=
+	Func        string  `json:"calc"`   // e.g. max, min, avg
+	Operator    string  `json:"opt"`    // e.g. =/==, <, <=, >, >=
 	RightValue  float64 `json:"value1"` // critical value
 	RightValue2 float64 `json:"value2"` // critical value
 	Action      string  `json:"action"`
