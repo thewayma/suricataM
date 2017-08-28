@@ -34,7 +34,7 @@ func syncStrategies() {
 	if lastStrategiesVersion != resp.Version {
 		Log.Trace("Checker <= Hearbeat, Strategies need to be updated, lastVersion=%s, newVersion=%s", lastStrategiesVersion, resp.Version)
 		lastStrategiesVersion = resp.Version
-		//rebuildStrategyMap(&strategiesResponse)
+		rebuildStrategyMap(&strategiesResponse)
 	} else {
 		Log.Trace("Checker <= Hearbeat, Strategies dnt need to be updated, lastVersion=newVersion=%s", resp.Version)
 	}
