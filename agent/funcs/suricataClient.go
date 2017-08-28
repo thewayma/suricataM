@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/antonholmquist/jason"
 	"github.com/thewayma/suricataM/agent/g"
+	"github.com/thewayma/suricataM/comm/log"
 	"net"
 	"os"
 )
@@ -31,15 +32,14 @@ func init() {
 	ifaceMap = make(map[int]string)
 }
 
-func suriConnect() net.Conn {
+func suriConnect() (net.Conn, err) {
 	conn, err := net.Dial("unix", g.Config().Suricata.UnixSockFile)
-	//g.checkError(err)
 	if err != nil {
-		fmt.Printf("Unix File %s not found\n", g.Config().Suricata.UnixSockFile)
-		os.Exit(-1)
+		log.Log.CRITICAL("Unix File %s not found", g.Config().Suricata.UnixSockFile)
+		return nil, err
 	}
 
-	return conn
+	return conn, nil
 }
 
 func suriMakeCommand(com string) string {
@@ -77,9 +77,12 @@ func suriSendCommandGet(conn net.Conn, data string) (interface{}, error) {
 }
 
 func GetUptime() int64 {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return -1
+	}
 
+	defer conn.Close()
 	suriSendVersion(conn)
 
 	com := suriMakeCommand("uptime")
@@ -94,9 +97,12 @@ func GetUptime() int64 {
 }
 
 func ShutDown() string {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return "UnixSockFile Not Found"
+	}
 
+	defer conn.Close()
 	suriSendVersion(conn)
 
 	com := suriMakeCommand("shutdown")
@@ -109,9 +115,12 @@ func ShutDown() string {
 }
 
 func ReloadRules() string {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return "UnixSockFile Not Found"
+	}
 
+	defer conn.Close()
 	suriSendVersion(conn)
 
 	com := suriMakeCommand("reload-rules")
@@ -124,9 +133,12 @@ func ReloadRules() string {
 }
 
 func GetVersion() string {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return "UnixSockFile Not Found"
+	}
 
+	defer conn.Close()
 	suriSendVersion(conn)
 
 	com := suriMakeCommand("version")
@@ -139,9 +151,12 @@ func GetVersion() string {
 }
 
 func GetRunningMode() string {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return "UnixSockFile Not Found"
+	}
 
+	defer conn.Close()
 	suriSendVersion(conn)
 
 	com := suriMakeCommand("running-mode")
@@ -154,9 +169,12 @@ func GetRunningMode() string {
 }
 
 func GetCaptureMode() string {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return "UnixSockFile Not Found"
+	}
 
+	defer conn.Close()
 	suriSendVersion(conn)
 
 	com := suriMakeCommand("capture-mode")
@@ -169,9 +187,12 @@ func GetCaptureMode() string {
 }
 
 func GetProfilingCouters() []byte {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return []byte("UnixSockFile Not Found")
+	}
 
+	defer conn.Close()
 	suriSendVersion(conn)
 
 	com := suriMakeCommand("dump-counters")
@@ -185,9 +206,12 @@ func GetProfilingCouters() []byte {
 }
 
 func GetAllPortStats() map[string]*ifStat {
-	conn := suriConnect()
-	defer conn.Close()
+	conn, err := suriConnect()
+	if err != nil {
+		return nil
+	}
 
+	defer conn.Close()
 	iStat := make(map[string]*ifStat)
 
 	suriSendVersion(conn)
