@@ -42,10 +42,6 @@ func (this *Event) Priority() int {
 	return this.Strategy.Priority
 }
 
-func (this *Event) Note() string {
-	return this.Strategy.Note
-}
-
 func (this *Event) Metric() string {
 	return this.Strategy.Metric
 }

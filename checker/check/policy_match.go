@@ -13,31 +13,14 @@ func Checker(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {
 }
 
 func CheckStrategy(L *SafeLinkedList, firstItem *st.CheckerItem, now int64) {
-	key := fmt.Sprintf("%s/%s", firstItem.Endpoint, firstItem.Metric)
+	key := "allStrategy"
 	strategyMap := g.StrategyMap.Get()
 	strategies, exists := strategyMap[key]
 	if !exists {
 		return
 	}
 
-	Log.Info(firstItem)
-
 	for _, s := range strategies {
-		// 因为key仅仅是endpoint和metric，所以得到的strategies并不一定是与当前CheckerItem相关的
-		// 比如lg-dinp-docker01.bj配置了两个proc.num的策略，一个name=docker，一个name=agent
-		// 所以此处要排除掉一部分
-		related := true
-		for tagKey, tagVal := range s.Tags {
-			if myVal, exists := firstItem.Tags[tagKey]; !exists || myVal != tagVal {
-				related = false
-				break
-			}
-		}
-
-		if !related {
-			continue
-		}
-
 		checkItemWithStrategy(L, s, firstItem, now)
 	}
 }

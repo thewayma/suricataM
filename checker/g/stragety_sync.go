@@ -6,14 +6,8 @@ import (
 	"time"
 )
 
-/*
-   与HeartBeat通信, 拉取最新策略配置
-   因此, 需要 strategy-related, hbsRpc-related
-*/
-
 type SafeStrategyMap struct {
 	sync.RWMutex
-	// endpoint:metric => [strategy1, strategy2 ...]
 	M map[string][]Strategy
 }
 

@@ -34,42 +34,38 @@ type HistoryData struct {
 }
 
 type StrategiesRequest struct {
-	IP       string
+	Ip       string
 	Hostname string
 }
 
 type Strategy struct {
-	Id         int               `json:"id"`
-	Metric     string            `json:"metric"`
-	Tags       map[string]string `json:"tags"`
-	Func       string            `json:"func"`       // e.g. max(#3) all(#3)
-	Operator   string            `json:"operator"`   // e.g. < !=
-	RightValue float64           `json:"rightValue"` // critical value
-	MaxStep    int               `json:"maxStep"`
-	Priority   int               `json:"priority"`
-	Note       string            `json:"note"`
+	Id          int     `json:"id"`
+	Cycle       int     `json:"cycle"`
+	Metric      string  `json:"item"`
+	Func        string  `json:"calc"`   // e.g. max(#3) all(#3)
+	Operator    string  `json:"opt"`    // e.g. < !=
+	RightValue  float64 `json:"value1"` // critical value
+	RightValue2 float64 `json:"value2"` // critical value
+	Action      string  `json:"action"`
+	Priority    int     `json:"priority"`
+	MaxStep     int     `json:"maxstep"`
 }
 
 func (this *Strategy) String() string {
 	return fmt.Sprintf(
-		"<Id:%d, Metric:%s, Tags:%v, %s%s%s MaxStep:%d, P%d, %s, %v>",
+		"<Id=%d, Metric=%s, %s(#%s) %s %s, Priority=%d, MaxStep=%d",
 		this.Id,
 		this.Metric,
-		this.Tags,
 		this.Func,
+		this.Cycle,
 		this.Operator,
 		utils.ReadableFloat(this.RightValue),
-		this.MaxStep,
 		this.Priority,
-		this.Note,
+		this.MaxStep,
 	)
 }
 
-type HostStrategy struct {
-	Hostname   string     `json:"hostname"`
-	Strategies []Strategy `json:"strategies"`
-}
-
 type StrategiesResponse struct {
-	HostStrategies []*HostStrategy `json:"hostStrategies"`
+	Version    string     `json:"version"`
+	Strategies []Strategy `json:"Policies"`
 }
