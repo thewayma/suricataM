@@ -35,20 +35,15 @@ func ReportAgentStatus() {
 
 func reportAgentStatus(interval time.Duration) {
 	for {
-		hostname, err := g.Hostname()
-		if err != nil {
-			hostname = fmt.Sprintf("error:%s", err.Error())
-		}
-
 		req := AgentReportRequest{
-			Hostname:     hostname,
+			Hostname:     g.Hostname(),
 			IP:           g.IP(),
 			AgentVersion: g.VERSION,
 			Uptime:       funcs.GetUptime(),
 		}
 
 		var resp SimpleRpcResponse
-		err = g.HbsClient.Call("Agent.ReportStatus", req, &resp)
+		err := g.HbsClient.Call("Agent.ReportStatus", req, &resp)
 		if err != nil || resp.Code != 0 {
 			Log.Error("Agent <= Heartbeat, Agent.ReportStatus fail:%s, Request=%v, Response=%v", err, req, resp)
 		}

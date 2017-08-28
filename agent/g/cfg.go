@@ -83,17 +83,18 @@ func Config() *GlobalConfig {
 	return config
 }
 
-func Hostname() (string, error) {
+func Hostname() string {
 	hostname := Config().Agent.Hostname
 	if hostname != "" {
-		return hostname, nil
+		return hostname
 	}
 
 	hostname, err := os.Hostname()
 	if err != nil {
 		log.Println("ERROR: os.Hostname() fail", err)
+		return "all-default-hostname"
 	}
-	return hostname, err
+	return hostname
 }
 
 func IP() string {

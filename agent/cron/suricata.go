@@ -69,7 +69,8 @@ func syncMonitorMetric() {
 		time.Sleep(duration)
 
 		req := st.AgentMetricCommandRequest{
-			IP: g.IP(),
+			IP:       g.IP(),
+			Hostname: g.Hostname(),
 		}
 
 		var resp st.AgentMetricCommandResponse

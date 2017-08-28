@@ -13,7 +13,8 @@ type AgentControlCommandResponse struct {
 }
 
 type AgentMetricCommandRequest struct {
-	IP string
+	IP       string
+	Hostname string
 }
 
 type cpuMetric struct {
