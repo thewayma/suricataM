@@ -46,9 +46,10 @@ func ParseStructByReflect(u interface{}) {
 					if !ok {
 						continue
 					}
-					val := false
-					if sfv.Field(j).Interface() == "off" {
-						val = true
+					val := true //!< 默认监控项为关闭
+					if sfv.Field(j).Interface() == "on" {
+						val = false
+						Log.Trace("Agent <= Heartbeat, Open Monitor Metric %s", sft.Field(j).Name)
 					}
 
 					st.IgnoreMetric.Lock()
