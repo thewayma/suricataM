@@ -65,8 +65,9 @@ func (this *RpcClient) serverConn() error {
 
 		this.rpcClient, err = net.JsonRpcClient("tcp", this.RpcServer, this.Timeout)
 		if err != nil {
-			Log.Error("%s, dial %s fail: %v", this.Peer, this.RpcServer, err)
+			Log.Error("%s, Cnt establish rpc connection to %s, err: %s, RetryNum=%d", this.Peer, this.RpcServer, err.Error(), retry)
 			if retry > 3 {
+				Log.Error("%s, Cnt establish rpc connection to %s, err: %s, RetryNum > 3", this.Peer, this.RpcServer, err.Error())
 				return err
 			}
 			time.Sleep(time.Duration(math.Pow(2.0, float64(retry))) * time.Second) //!< 指数回退
@@ -83,6 +84,7 @@ func (this *RpcClient) Call(method string, args interface{}, reply interface{}) 
 
 	err := this.serverConn()
 	if err != nil {
+		Log.Error("%s, this.serverConn() failed, err: %s", this.Peer, err.Error())
 		return err
 	}
 

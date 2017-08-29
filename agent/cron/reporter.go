@@ -20,7 +20,7 @@ type AgentReportRequest struct {
 
 func (this *AgentReportRequest) String() string {
 	return fmt.Sprintf(
-		"<Hostname:%s, IP:%s, agentVersion:%s, engineVersion:%s, engineUptime:%s>",
+		"<Hostname=%s, IP=%s, agentVersion=%s, engineVersion=%s, engineUptime=%d>",
 		this.Hostname,
 		this.IP,
 		this.AgentVersion,
