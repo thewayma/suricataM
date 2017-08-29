@@ -187,9 +187,9 @@ func syncControlCommand() {
 			Log.Trace("Agent <= Heartbeat, Start Suricata")
 			res, err := exec.Command("/bin/sh", "-c", scStartString()).Output()
 			if err != nil {
-				Log.Error("Agent <= Heartbeat, Start Suricata Failure: %s\n", err.Error())
+				Log.Error("Agent <= Heartbeat, Start Suricata Failure: %s", err.Error())
 			} else {
-				Log.Trace("Agent <= Heartbeat, Start Suricata Success: %s\n", res)
+				Log.Trace("Agent <= Heartbeat, Start Suricata Success: %s", res)
 			}
 
 		case "engine-shutdown":
@@ -200,9 +200,9 @@ func syncControlCommand() {
 			Log.Trace("     Restart_1. ShutDown: %s", funcs.ShutDown())
 			res, err := exec.Command("/bin/sh", "-c", scStartString()).Output()
 			if err != nil {
-				Log.Error("     ReStart_2. Start Suricata Failure: %s\n", err.Error())
+				Log.Error("     ReStart_2. Start Suricata Failure: %s", err.Error())
 			} else {
-				Log.Trace("     ReStart_2. Start Suricata Success: %s\n", res)
+				Log.Trace("     ReStart_2. Start Suricata Success: %s", res)
 			}
 
 		case "reload-rules":
@@ -215,7 +215,7 @@ func syncControlCommand() {
 			Log.Trace("Agent <= Heartbeat, Reload Suricata Rules: %s", funcs.ReloadRules())
 
 		default:
-			Log.Trace("Agent <= Heartbeat, nothing to do right now!!!")
+			Log.Trace("Agent <= Heartbeat, Command=%s, nothing to do right now!!!", resp.Command)
 		}
 	}
 }
