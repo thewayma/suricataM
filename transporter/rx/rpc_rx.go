@@ -1,19 +1,18 @@
 package rx
 
 import (
+	. "github.com/thewayma/suricataM/comm/log"
+	. "github.com/thewayma/suricataM/comm/st"
+	"github.com/thewayma/suricataM/transporter/g"
+	"github.com/thewayma/suricataM/transporter/tx"
 	"log"
 	"net"
 	"net/rpc"
 	"net/rpc/jsonrpc"
 	"time"
-
-	. "github.com/thewayma/suricataM/comm/log"
-	. "github.com/thewayma/suricataM/comm/st"
-	"github.com/thewayma/suricataM/transporter/g"
-	"github.com/thewayma/suricataM/transporter/tx"
 )
 
-type Transfer struct{}
+type Transporter struct{}
 
 func RpcServer() {
 	if !g.Config().Rpc.Enabled {
@@ -34,7 +33,7 @@ func RpcServer() {
 	}
 
 	server := rpc.NewServer()
-	server.Register(new(Transfer))
+	server.Register(new(Transporter))
 
 	for {
 		conn, err := listener.Accept()
@@ -46,7 +45,7 @@ func RpcServer() {
 	}
 }
 
-func (t *Transfer) Update(args []*MetricData, reply *TransporterResponse) error {
+func (t *Transporter) Update(args []*MetricData, reply *TransporterResponse) error {
 	return RecvMetric(args, reply, "rpc")
 }
 
@@ -70,7 +69,7 @@ func RecvMetric(items []*MetricData, reply *TransporterResponse, from string) er
 	reply.Total = len(items)
 	reply.Latency = (time.Now().UnixNano() - start.UnixNano()) / 1000000
 
-	Log.Trace("Transporter => Agent, TransferResp=%v", reply)
+	Log.Trace("Transporter => Agent, TransporterResp=%v", reply)
 
 	return nil
 }
