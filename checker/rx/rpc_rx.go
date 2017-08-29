@@ -14,7 +14,7 @@ import (
 type Checker struct{}
 
 func (this *Checker) Send(items []*st.CheckerItem, resp *st.SimpleRpcResponse) error {
-	max := g.Config().MaxLinklistNum
+	max := g.Config().Checker.MaxLinklistNum
 	now := time.Now().Unix()
 
 	Log.Trace("Checker <= Transporter, Len=%d, CheckerItem[0]=%v", len(items), items[0])

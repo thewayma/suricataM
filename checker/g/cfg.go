@@ -14,9 +14,10 @@ type RpcConfig struct {
 }
 
 type CheckerConfig struct {
-	Ip       string
-	Hostname string
-	Rpc      *RpcConfig
+	Ip             string
+	Hostname       string
+	Rpc            *RpcConfig
+	MaxLinklistNum int
 }
 
 type HbsConfig struct {
@@ -41,10 +42,9 @@ type AlarmConfig struct {
 }
 
 type GlobalConfig struct {
-	MaxLinklistNum int
-	Checker        *CheckerConfig
-	Hbs            *HbsConfig
-	Alarm          *AlarmConfig
+	Checker *CheckerConfig
+	Hbs     *HbsConfig
+	Alarm   *AlarmConfig
 }
 
 var (

@@ -1,12 +1,12 @@
 {
-    "MaxLinklistNum": 11,
     "Checker": {
         "Ip": "10.12.209.156",
         "Hostname": "JNIDS_Checker",
         "Rpc": {
             "Enabled": true,
             "Listen": "0.0.0.0:6080"
-        }
+        },
+        "MaxLinklistNum": 11
     },
     "Hbs": {
         "Server":  "127.0.0.1:6030",
