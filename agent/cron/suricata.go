@@ -39,7 +39,7 @@ func ParseStructByReflect(u interface{}) {
 				sft := v.Field(i).Type()
 				sfv := v.Field(i)
 				for j := 0; j < sfv.NumField(); j++ {
-					Log.Trace("    structfield=%s, type=%s, value=%v, tag=%s\n",
+					Log.Trace("     structfield=%s, type=%s, value=%v, tag=%s\n",
 						sft.Field(j).Name, sfv.Field(j).Type().Kind(), sfv.Field(j).Interface(), sft.Field(j).Tag)
 
 					key, ok := st.MetricMapper[sft.Field(j).Name]
@@ -49,7 +49,7 @@ func ParseStructByReflect(u interface{}) {
 					val := true //!< 默认监控项为关闭
 					if sfv.Field(j).Interface() == "on" {
 						val = false
-						Log.Trace("Agent <= Heartbeat, Open Monitor Metric %s", sft.Field(j).Name)
+						Log.Trace("     Agent <= Heartbeat, Enable Monitor Metric: %s", sft.Field(j).Name)
 					}
 
 					st.IgnoreMetric.Lock()
